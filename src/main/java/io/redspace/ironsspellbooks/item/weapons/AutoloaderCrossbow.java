@@ -76,7 +76,6 @@ public class AutoloaderCrossbow extends CrossbowItem {
         super.inventoryTick(itemstack, pLevel, pEntity, pSlotId, pIsSelected);
     }
 
-    @Override
     public boolean onEntityItemUpdate(ItemStack stack, ItemEntity entity) {
         int i = getLoadingTicks(stack);
         handleTicking(stack, entity.level, entity);
@@ -85,7 +84,7 @@ public class AutoloaderCrossbow extends CrossbowItem {
             ItemStack cloneStack = stack.copy();
             entity.setItem(cloneStack);
         }
-        return super.onEntityItemUpdate(stack, entity);
+        return false;
     }
 
     protected static void handleTicking(ItemStack itemStack, Level level, @NotNull Entity entity) {

@@ -94,14 +94,12 @@ public class PedestalTile extends BlockEntity {
         return ClientboundBlockEntityDataPacket.create(this, (block) -> nbt);
     }
 
-    @Override
     public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket pkt) {
         //irons_spellbooks.LOGGER.debug("onDataPacket: pkt.getTag:{}", pkt.getTag());
         handleUpdateTag(pkt.getTag());
         level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), Block.UPDATE_ALL);
     }
 
-    @Override
     public void handleUpdateTag(CompoundTag tag) {
         //irons_spellbooks.LOGGER.debug("handleUpdateTag: tag:{}", tag);
         if (tag != null) {
@@ -120,7 +118,7 @@ public class PedestalTile extends BlockEntity {
 //    }
 
     private CompoundTag writeNBT(CompoundTag nbt) {
-        nbt.put(NBT_HELD_ITEM, heldItem.serializeNBT());
+        nbt.put(NBT_HELD_ITEM, heldItem.save(new CompoundTag()));
         //irons_spellbooks.LOGGER.debug("getUpdateTag tag:{}", tag);
         return nbt;
     }

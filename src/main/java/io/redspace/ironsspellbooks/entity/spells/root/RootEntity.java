@@ -99,7 +99,6 @@ public class RootEntity extends LivingEntity implements GeoEntity, PreventDismou
         return false;
     }
 
-    @Override
     public boolean shouldRiderSit() {
         return false;
     }
@@ -109,7 +108,6 @@ public class RootEntity extends LivingEntity implements GeoEntity, PreventDismou
         return 0d;
     }
 
-    @Override
     public boolean shouldRiderFaceForward(@NotNull Player player) {
         return false;
     }
@@ -279,7 +277,6 @@ public class RootEntity extends LivingEntity implements GeoEntity, PreventDismou
         return false;
     }
 
-    @Override
     public boolean isPushedByFluid(FluidType type) {
         return false;
     }

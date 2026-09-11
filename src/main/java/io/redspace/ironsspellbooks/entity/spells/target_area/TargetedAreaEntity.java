@@ -116,7 +116,6 @@ public class TargetedAreaEntity extends Entity {
         return EntityDimensions.scalable(this.getRadius() * 2.0F, 0.8F);
     }
 
-    @Override
     public boolean isPushedByFluid(FluidType type) {
         return false;
     }

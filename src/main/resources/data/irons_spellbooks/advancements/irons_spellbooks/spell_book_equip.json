@@ -17,13 +17,13 @@
   "criteria": {
     "requirement": {
       "conditions": {
-        "curios:slot": {
-          "slots": [
-            "spellbook"
-          ]
-        }
+        "items": [
+          {
+            "tag": "irons_spellbooks:spell_books"
+          }
+        ]
       },
-      "trigger": "curios:equip_curio"
+      "trigger": "minecraft:inventory_changed"
     }
   }
 }

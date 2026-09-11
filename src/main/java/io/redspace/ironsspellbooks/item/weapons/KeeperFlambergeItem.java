@@ -21,7 +21,6 @@ public class KeeperFlambergeItem extends ExtendedSwordItem {
         super(ExtendedWeaponTiers.KEEPER_FLAMBERGE, 10, -2.7, Map.of(Attributes.ARMOR, new AttributeModifier(UUID.fromString("c552273e-6669-4cd2-80b3-a703b7616336"), "weapon mod", 5, AttributeModifier.Operation.ADDITION)), ItemPropertiesHelper.equipment().stacksTo(1).fireResistant().rarity(Rarity.UNCOMMON));
     }
 
-    @Override
     public void initializeClient(@NotNull Consumer<IClientItemExtensions> consumer) {
         consumer.accept(new IClientItemExtensions() {
             @Override

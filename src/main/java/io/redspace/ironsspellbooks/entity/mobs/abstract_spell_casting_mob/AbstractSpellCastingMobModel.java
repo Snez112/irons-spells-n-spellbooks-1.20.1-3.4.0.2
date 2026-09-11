@@ -99,7 +99,7 @@ public abstract class AbstractSpellCastingMobModel extends DefaultedEntityGeoMod
         /*
             Leg Controls
          */
-        if (entity.isPassenger() && entity.getVehicle().shouldRiderSit()) {
+        if (entity.isPassenger() && entity.getVehicle() != null) {
             //If we are riding something, pose ourselves sitting
             transformStack.pushRotation(rightLeg,
                     1.4137167F,

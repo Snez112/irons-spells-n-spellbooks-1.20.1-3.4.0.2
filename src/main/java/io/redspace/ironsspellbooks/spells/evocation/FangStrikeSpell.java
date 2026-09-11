@@ -86,16 +86,7 @@ public class FangStrikeSpell extends AbstractSpell {
     }
 
     private int getGroundLevel(Level level, Vec3 start, int maxSteps) {
-        if (!level.getBlockState(BlockPos.containing(start)).isAir()) {
-            for (int i = 0; i < maxSteps; i++) {
-                start = start.add(0, 1, 0);
-                if (level.getBlockState(BlockPos.containing(start)).isAir())
-                    break;
-            }
-        }
-        //Vec3 upper = level.clip(new ClipContext(start, start.add(0, maxSteps, 0), ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, null)).getLocation();
-        Vec3 lower = level.clip(new ClipContext(start, start.add(0, maxSteps * -2, 0), ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, null)).getLocation();
-        return (int) lower.y;
+        return (int) Utils.findRelativeGroundLevel(level, start, maxSteps * 2);
     }
 
     @Override

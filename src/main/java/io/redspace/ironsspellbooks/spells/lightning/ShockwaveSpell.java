@@ -100,7 +100,6 @@ public class ShockwaveSpell extends AbstractSpell {
         Vec3 start = entity.getBoundingBox().getCenter();
         float damage = getDamage(spellLevel, entity);
         var dummyLightningBolt = new LightningBolt(EntityType.LIGHTNING_BOLT, level);
-        dummyLightningBolt.setDamage(0);
         dummyLightningBolt.setVisualOnly(true);
         level.getEntities(entity, entity.getBoundingBox().inflate(radius, radius, radius), (target) -> !DamageSources.isFriendlyFireBetween(target, entity) && Utils.hasLineOfSight(level, entity, target, true)).forEach(target -> {
             if (target instanceof LivingEntity livingEntity && canHit(entity, target) && livingEntity.distanceToSqr(entity) < radius * radius) {

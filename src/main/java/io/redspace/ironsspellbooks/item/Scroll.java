@@ -56,20 +56,24 @@ public class Scroll extends Item implements IScroll {
         var spellSlot = getSpellSlotFromStack(stack);
         var spell = spellSlot.getSpell();
 
+        if (spell == io.redspace.ironsspellbooks.api.registry.SpellRegistry.none()) {
+            return InteractionResultHolder.pass(stack);
+        }
+
         if (level.isClientSide) {
             if (ClientMagicData.isCasting()) {
-                return InteractionResultHolder.consume(stack);
+                return ItemUtils.startUsingInstantly(level, player, hand);
             } else if (!ClientMagicData.getSyncedSpellData(player).isSpellLearned(spell)) {
                 return InteractionResultHolder.pass(stack);
             } else {
-                return InteractionResultHolder.consume(stack);
+                return ItemUtils.startUsingInstantly(level, player, hand);
             }
         }
 
         var castingSlot = hand.ordinal() == 0 ? SpellSelectionManager.MAINHAND : SpellSelectionManager.OFFHAND;
 
         if (spell.attemptInitiateCast(stack, spell.getLevelFor(spellSlot.getLevel(), player), level, player, CastSource.SCROLL, false, castingSlot)) {
-            return InteractionResultHolder.consume(stack);
+            return ItemUtils.startUsingInstantly(level, player, hand);
         } else {
             return InteractionResultHolder.fail(stack);
         }

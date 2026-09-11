@@ -47,6 +47,10 @@ public class SummonedPolarBear extends PolarBear implements MagicSummon {
     protected UUID summonerUUID;
 
     @Override
+    public float maxUpStep() {
+        return 1f;
+    }
+
     public float getStepHeight() {
         return 1f;
     }
@@ -108,9 +112,13 @@ public class SummonedPolarBear extends PolarBear implements MagicSummon {
     }
 
     @Override
+    public void remove(RemovalReason reason) {
+        this.onRemovedHelper(this, MobEffectRegistry.POLAR_BEAR_TIMER.get());
+        super.remove(reason);
+    }
+
     public void onRemovedFromWorld() {
         this.onRemovedHelper(this, MobEffectRegistry.POLAR_BEAR_TIMER.get());
-        super.onRemovedFromWorld();
     }
 
     @Override

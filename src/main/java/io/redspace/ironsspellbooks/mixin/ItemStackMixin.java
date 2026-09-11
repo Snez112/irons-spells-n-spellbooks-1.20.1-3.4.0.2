@@ -11,8 +11,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(ItemStack.class)
 public abstract class ItemStackMixin {
-    @Inject(method = "<init>(Lnet/minecraft/world/level/ItemLike;ILnet/minecraft/nbt/CompoundTag;)V", at = @At("TAIL"))
-    public void init(ItemLike itemLike, int count, CompoundTag capNBT, CallbackInfo ci) {
+    @Inject(method = "<init>(Lnet/minecraft/world/level/ItemLike;I)V", at = @At("TAIL"))
+    public void init(ItemLike itemLike, int count, CallbackInfo ci) {
         if (itemLike != null && itemLike.asItem() instanceof IPresetSpellContainer iPresetSpellContainer) {
             iPresetSpellContainer.initializeSpellContainer((ItemStack) (Object) this);
         }

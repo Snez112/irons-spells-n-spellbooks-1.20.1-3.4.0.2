@@ -21,8 +21,9 @@ public class BeardifierMixin {
      * Intercept our own structure elements and apply custom processing as needed. Most is a mirror of default method.
      */
     @Inject(
-            method = {"lambda$forStructuresInChunk$2","m_223930_"},
+            method = {"lambda$forStructuresInChunk$2", "m_223930_", "method_42694"},
             remap = false,
+            require = 0,
             at = @At(value = "HEAD"),
             cancellable = true)
     private static void injectCustomTerrainAdaptation(ChunkPos pChunkPos, ObjectList<Beardifier.Rigid> list, int i, int j, ObjectList<JigsawJunction> junctions, StructureStart p_223936_, CallbackInfo ci) {

@@ -18,7 +18,6 @@ public class TruthseekerItem extends ExtendedSwordItem {
         super(ExtendedWeaponTiers.TRUTHSEEKER, 11, -3, Map.of(), ItemPropertiesHelper.equipment().stacksTo(1).rarity(Rarity.UNCOMMON));
     }
 
-    @Override
     public void initializeClient(@NotNull Consumer<IClientItemExtensions> consumer) {
         consumer.accept(new IClientItemExtensions() {
             @Override

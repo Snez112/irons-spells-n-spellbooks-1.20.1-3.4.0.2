@@ -96,7 +96,6 @@ public class ShockwaveParticle extends TextureSheetParticle {
     /**
      * Since we are so big, we always want to render ourselves even if the player does not have a direct line of sight to our origin
      */
-    @Override
     public boolean shouldCull() {
         return false;
     }

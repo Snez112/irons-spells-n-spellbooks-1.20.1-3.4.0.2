@@ -1,5 +1,6 @@
 package io.redspace.ironsspellbooks.api.magic;
 
+import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.network.ISerializable;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
@@ -31,16 +32,23 @@ public class LearnedSpellData implements ISerializable {
     }
 
     public void loadFromNBT(CompoundTag compound) {
-        ListTag learnedTag = (ListTag) compound.get(LEARNED_SPELLS);
-        if (learnedTag != null && !learnedTag.isEmpty()) {
-            for (Tag tag : learnedTag) {
-                if (tag instanceof StringTag stringTag) {
-                    ResourceLocation resourceLocation = new ResourceLocation(stringTag.getAsString());
-                    if (SpellRegistry.REGISTRY.get().getValue(resourceLocation) != null) {
-                        learnedSpells.add(resourceLocation);
+        if (compound == null) return;
+        try {
+            if (compound.contains(LEARNED_SPELLS, Tag.TAG_LIST)) {
+                ListTag learnedTag = compound.getList(LEARNED_SPELLS, Tag.TAG_STRING);
+                if (!learnedTag.isEmpty()) {
+                    for (Tag tag : learnedTag) {
+                        if (tag instanceof StringTag stringTag) {
+                            ResourceLocation resourceLocation = new ResourceLocation(stringTag.getAsString());
+                            if (SpellRegistry.REGISTRY != null && SpellRegistry.REGISTRY.get() != null && SpellRegistry.REGISTRY.get().getValue(resourceLocation) != null) {
+                                learnedSpells.add(resourceLocation);
+                            }
+                        }
                     }
                 }
             }
+        } catch (Exception e) {
+            IronsSpellbooks.LOGGER.error("Error loading LearnedSpellData from NBT", e);
         }
     }
 

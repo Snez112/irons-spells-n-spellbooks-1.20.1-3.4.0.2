@@ -41,7 +41,6 @@ public class AffinityRing extends SimpleDescriptiveCurio {
         return Component.translatable(this.getDescriptionId(pStack), AffinityData.getAffinityData(pStack).getNameForItem());
     }
 
-    @Override
     public void initializeClient(@NotNull Consumer<IClientItemExtensions> consumer) {
         consumer.accept(new IClientItemExtensions() {
             @Override

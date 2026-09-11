@@ -43,6 +43,8 @@ public class PotionRegistry {
     }
 
     public static void addContainerMix(Item pFrom, Item pIngredient, Item pTo){
-        PotionBrewing.CONTAINER_MIXES.add(new PotionBrewing.Mix<>(net.minecraftforge.registries.ForgeRegistries.ITEMS, pFrom, Ingredient.of(pIngredient), pTo));
+        if (pFrom instanceof net.minecraft.world.item.PotionItem fromPotion && pTo instanceof net.minecraft.world.item.PotionItem toPotion) {
+            net.fabricmc.fabric.api.registry.FabricBrewingRecipeRegistry.registerItemRecipe(fromPotion, Ingredient.of(pIngredient), toPotion);
+        }
     }
 }

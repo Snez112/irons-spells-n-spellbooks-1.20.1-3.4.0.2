@@ -65,7 +65,6 @@ public class PortalEntity extends Entity implements AntiMagicSusceptible {
         }
     }
 
-    @Override
     public void onRemovedFromWorld() {
         if (level.isClientSide) return;
 
@@ -75,8 +74,6 @@ public class PortalEntity extends Entity implements AntiMagicSusceptible {
         }
 
         MagicManager.spawnParticles(level, new DustParticleOptions(new Vector3f(.5f, .05f, .6f), 1.5f), getX(), getY(), getZ(), 25, .4, .8, .4, .03, false);
-
-        super.onRemovedFromWorld();
     }
 
     public void checkForEntitiesToTeleport() {
@@ -108,7 +105,7 @@ public class PortalEntity extends Entity implements AntiMagicSusceptible {
                         if (server != null) {
                             var dim = server.getLevel(portalPos.dimension());
                             if (dim != null) {
-                                entity.changeDimension(dim, new PortalTeleporter(destination));
+                                net.fabricmc.fabric.api.dimension.v1.FabricDimensions.teleport(entity, dim, new net.minecraft.world.level.portal.PortalInfo(destination, Vec3.ZERO, entity.getYRot(), entity.getXRot()));
                             }
                         }
                     }

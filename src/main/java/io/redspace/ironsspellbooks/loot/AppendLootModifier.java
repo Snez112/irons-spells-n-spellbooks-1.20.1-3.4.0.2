@@ -18,10 +18,10 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.function.Supplier;
 
-public class AppendLootModifier<V> extends LootModifier {
+public class AppendLootModifier extends LootModifier {
     public static final Supplier<Codec<AppendLootModifier>> CODEC = Suppliers.memoize(()
             -> RecordCodecBuilder.create(inst -> codecStart(inst).and(Codec.STRING
-            .fieldOf("key").forGetter(m -> m.resourceLocationKey)).apply(inst, AppendLootModifier::new)));
+            .fieldOf("key").forGetter((AppendLootModifier m) -> m.resourceLocationKey)).apply(inst, AppendLootModifier::new)));
     private final String resourceLocationKey;
 
     protected AppendLootModifier(LootItemCondition[] conditionsIn, String resourceLocationKey) {

@@ -1,0 +1,42 @@
+{
+  "schemaVersion": 1,
+  "id": "irons_spellbooks",
+  "version": "${version}",
+  "name": "Iron's Spells 'n Spellbooks",
+  "description": "A magic mod for Minecraft returning to the classic RPG spellcasting fantasy.",
+  "authors": [
+    "Iron431",
+    "Lab3"
+  ],
+  "license": "All Rights Reserved",
+  "icon": "spellbooks title small background low res.png",
+  "contact": {
+    "homepage": "https://www.curseforge.com/minecraft/mc-mods/irons-spells-n-spellbooks",
+    "issues": "https://github.com/iron431/Irons-Spells-n-Spellbooks/issues"
+  },
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "io.redspace.ironsspellbooks.fabric.FabricIronsSpellbooks"
+    ],
+    "client": [
+      "io.redspace.ironsspellbooks.fabric.client.FabricIronsSpellbooksClient"
+    ]
+  },
+  "mixins": [
+    "mixins.irons_spellbooks.json"
+  ],
+  "accessWidener": "irons_spellbooks.accesswidener",
+  "depends": {
+    "fabricloader": ">=0.15.0",
+    "minecraft": "~1.20.1",
+    "java": ">=17",
+    "fabric-api": "*",
+    "geckolib": "*",
+    "player-animator": "*"
+  },
+  "suggests": {
+    "patchouli": "*",
+    "jei": "*"
+  }
+}

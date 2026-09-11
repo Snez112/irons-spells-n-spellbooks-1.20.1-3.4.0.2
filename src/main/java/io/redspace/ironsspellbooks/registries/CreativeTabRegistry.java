@@ -4,6 +4,7 @@ import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.api.spells.ISpellContainer;
 import io.redspace.ironsspellbooks.capabilities.magic.SpellContainer;
+import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
@@ -27,7 +28,7 @@ public class CreativeTabRegistry {
         TABS.register(eventBus);
     }
 
-    public static final RegistryObject<CreativeModeTab> EQUIPMENT_TAB = TABS.register("spellbook_equipment", () -> CreativeModeTab.builder()
+    public static final RegistryObject<CreativeModeTab> EQUIPMENT_TAB = TABS.register("spellbook_equipment", () -> FabricItemGroup.builder()
             .title(Component.translatable("itemGroup." + IronsSpellbooks.MODID + ".spell_equipment_tab"))
             .icon(() -> new ItemStack(ItemRegistry.IRON_SPELL_BOOK.get()))
             .displayItems((enabledFeatures, entries) -> {
@@ -117,10 +118,9 @@ public class CreativeTabRegistry {
                 entries.accept(ItemRegistry.INVISIBILITY_RING.get());
 
             })
-            .withTabsBefore(CreativeModeTabs.SPAWN_EGGS)
             .build());
 
-    public static final RegistryObject<CreativeModeTab> MATERIALS_TAB = TABS.register("spellbook_materials", () -> CreativeModeTab.builder()
+    public static final RegistryObject<CreativeModeTab> MATERIALS_TAB = TABS.register("spellbook_materials", () -> FabricItemGroup.builder()
             .title(Component.translatable("itemGroup." + IronsSpellbooks.MODID + ".spell_materials_tab"))
             .icon(() -> new ItemStack(ItemRegistry.DIVINE_PEARL.get()))
             .displayItems((enabledFeatures, entries) -> {
@@ -197,14 +197,33 @@ public class CreativeTabRegistry {
                 entries.accept(ItemRegistry.PYROMANCER_SPAWN_EGG.get());
                 entries.accept(ItemRegistry.PRIEST_SPAWN_EGG.get());
                 entries.accept(ItemRegistry.APOTHECARIST_SPAWN_EGG.get());
+
+                entries.accept(ItemRegistry.INSCRIPTION_TABLE_BLOCK_ITEM.get());
+                entries.accept(ItemRegistry.SCROLL_FORGE_BLOCK.get());
+                entries.accept(ItemRegistry.ACANE_ANVIL_BLOCK_ITEM.get());
+                entries.accept(ItemRegistry.PEDESTAL_BLOCK_ITEM.get());
+                entries.accept(ItemRegistry.ARMOR_PILE_BLOCK_ITEM.get());
+                entries.accept(ItemRegistry.ALCHEMIST_CAULDRON_BLOCK_ITEM.get());
+                entries.accept(ItemRegistry.FIREFLY_JAR_ITEM.get());
+                entries.accept(ItemRegistry.ARCANE_DEBRIS_BLOCK_ITEM.get());
             })
-            .withTabsBefore(EQUIPMENT_TAB.getKey())
             .build());
 
-    public static final RegistryObject<CreativeModeTab> SCROLLS_TAB = TABS.register("spellbook_scrolls", () -> CreativeModeTab.builder()
+    public static final RegistryObject<CreativeModeTab> SCROLLS_TAB = TABS.register("spellbook_scrolls", () -> FabricItemGroup.builder()
             .title(Component.translatable("itemGroup." + IronsSpellbooks.MODID + ".spellbook_scrolls_tab"))
             .icon(() -> new ItemStack(ItemRegistry.SCROLL.get()))
-            .withTabsBefore(MATERIALS_TAB.getKey())
+            .displayItems((enabledFeatures, entries) -> {
+                SpellRegistry.getEnabledSpells().stream()
+                        .filter(spellType -> spellType != SpellRegistry.none())
+                        .forEach(spell -> {
+                            for (int i = spell.getMinLevel(); i <= spell.getMaxLevel(); i++) {
+                                var itemstack = new ItemStack(ItemRegistry.SCROLL.get());
+                                var spellList = ISpellContainer.createScrollContainer(spell, i, itemstack);
+                                spellList.save(itemstack);
+                                entries.accept(itemstack);
+                            }
+                        });
+            })
             .build());
 
     @SubscribeEvent

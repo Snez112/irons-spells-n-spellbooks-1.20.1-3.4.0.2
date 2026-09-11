@@ -34,12 +34,10 @@ public class StaffItem extends CastingItem {
         this.defaultModifiers = builder.build();
     }
 
-    @Override
     public Multimap<Attribute, AttributeModifier> getAttributeModifiers(EquipmentSlot slot, ItemStack stack) {
-        return (slot == EquipmentSlot.MAINHAND/* || pEquipmentSlot == EquipmentSlot.OFFHAND*/) ? this.defaultModifiers : super.getAttributeModifiers(slot, stack);
+        return (slot == EquipmentSlot.MAINHAND/* || pEquipmentSlot == EquipmentSlot.OFFHAND*/) ? this.defaultModifiers : super.getDefaultAttributeModifiers(slot);
     }
 
-    @Override
     public boolean canApplyAtEnchantingTable(ItemStack stack, Enchantment enchantment) {
         return enchantment.category == EnchantmentCategory.WEAPON;
     }
@@ -49,7 +47,6 @@ public class StaffItem extends CastingItem {
         return true;
     }
 
-    @Override
     @OnlyIn(Dist.CLIENT)
     public void initializeClient(Consumer<IClientItemExtensions> consumer) {
         StaffArmPose.initializeClientHelper(consumer);

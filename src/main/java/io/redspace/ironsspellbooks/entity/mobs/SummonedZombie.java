@@ -129,19 +129,16 @@ public class SummonedZombie extends Zombie implements MagicSummon, GeoAnimatable
     }
 
     @Override
-    public void onRemovedFromWorld() {
-        //IronsSpellbooks.LOGGER.debug("Summoned Zombie: Removed from world, {}", this.getRemovalReason());
+    public void remove(RemovalReason reason) {
         this.onRemovedHelper(this, MobEffectRegistry.RAISE_DEAD_TIMER.get());
-        super.onRemovedFromWorld();
+        super.remove(reason);
+    }
+
+    public void onRemovedFromWorld() {
+        this.onRemovedHelper(this, MobEffectRegistry.RAISE_DEAD_TIMER.get());
     }
 
 
-    @Override
-    public void remove(RemovalReason pReason) {
-        // IronsSpellbooks.LOGGER.debug("Summoned Zombie: Attempt remove for: {}",pReason.toString());
-
-        super.remove(pReason);
-    }
 
     @Override
     public boolean doHurtTarget(Entity pEntity) {

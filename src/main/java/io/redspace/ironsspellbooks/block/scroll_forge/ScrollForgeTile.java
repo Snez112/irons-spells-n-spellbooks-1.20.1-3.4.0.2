@@ -29,7 +29,7 @@ import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.Nonnull;
 
-public class ScrollForgeTile extends BlockEntity implements MenuProvider {
+public class ScrollForgeTile extends BlockEntity implements MenuProvider, net.minecraftforge.common.capabilities.ICapabilityProvider {
     private ScrollForgeMenu menu;
 
     private final ItemStackHandler itemHandler = new ItemStackHandler(4) {
@@ -112,9 +112,7 @@ public class ScrollForgeTile extends BlockEntity implements MenuProvider {
         lazyItemHandler.invalidate();
     }
 
-    @Override
     public void invalidateCaps() {
-        super.invalidateCaps();
         lazyItemHandler.invalidate();
     }
 
@@ -139,14 +137,12 @@ public class ScrollForgeTile extends BlockEntity implements MenuProvider {
         return packet;
     }
 
-    @Override
     public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket pkt) {
         //irons_spellbooks.LOGGER.debug("onDataPacket: pkt.getTag:{}", pkt.getTag());
         handleUpdateTag(pkt.getTag());
         level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), Block.UPDATE_ALL);
     }
 
-    @Override
     public void handleUpdateTag(CompoundTag tag) {
         //irons_spellbooks.LOGGER.debug("handleUpdateTag: tag:{}", tag);
         if (tag != null) {
@@ -156,12 +152,18 @@ public class ScrollForgeTile extends BlockEntity implements MenuProvider {
 
     @Nonnull
     @Override
+    public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap) {
+        return getCapability(cap, null);
+    }
+
+    @Nonnull
+    @Override
     public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @javax.annotation.Nullable Direction side) {
         if (cap == ForgeCapabilities.ITEM_HANDLER) {
             return lazyItemHandler.cast();
         }
 
-        return super.getCapability(cap, side);
+        return LazyOptional.empty();
     }
 
 //    public static void tick(Level pLevel, BlockPos pPos, BlockState pState, InscriptionTableTile pBlockEntity) {

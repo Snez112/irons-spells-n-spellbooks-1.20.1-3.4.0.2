@@ -26,7 +26,6 @@ public class MagehunterItem extends ExtendedSwordItem {
                 ItemPropertiesHelper.equipment().rarity(Rarity.UNCOMMON));
     }
 
-    @Override
     public void initializeClient(@NotNull Consumer<IClientItemExtensions> consumer) {
         consumer.accept(new IClientItemExtensions() {
             @Override

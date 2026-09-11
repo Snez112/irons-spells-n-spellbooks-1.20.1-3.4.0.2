@@ -274,6 +274,8 @@ public class Messages {
                 .encoder(ClientboundParticleShockwave::toBytes)
                 .consumerMainThread(ClientboundParticleShockwave::handle)
                 .add();
+
+        net.register();
     }
 
     public static <MSG> void sendToServer(MSG message) {

@@ -30,10 +30,9 @@ public class RegistryDataGenerator extends DatapackBuiltinEntriesProvider {
     }
 
     public static void addProviders(boolean isServer, DataGenerator generator, PackOutput output, CompletableFuture<HolderLookup.Provider> provider, ExistingFileHelper helper) {
-        generator.addProvider(isServer, new RegistryDataGenerator(output, provider));
-        // This is needed here because Minecraft Forge doesn't properly support tagging custom registries, without problems.
-        // If you think this looks fixable, please ensure the fixes are tested in runData & runClient as these current issues exist entirely within Forge's internals.
-        generator.addProvider(isServer, new DamageTypeTagGenerator(output, provider.thenApply(r -> append(r, BUILDER)), helper));
+        var pack = generator.getVanillaPack(isServer);
+        pack.addProvider(out -> new RegistryDataGenerator(out, provider));
+        pack.addProvider(out -> new DamageTypeTagGenerator(out, provider.thenApply(r -> append(r, BUILDER)), helper));
     }
 
     private static HolderLookup.Provider append(HolderLookup.Provider original, RegistrySetBuilder builder) {

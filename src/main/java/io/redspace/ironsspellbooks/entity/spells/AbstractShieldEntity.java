@@ -77,12 +77,10 @@ public abstract class AbstractShieldEntity extends Entity implements AntiMagicSu
         kill();
     }
 
-    @Override
     public boolean isMultipartEntity() {
         return true;
     }
 
-    @Override
     public abstract PartEntity<?>[] getParts();
 
     @Override

@@ -50,6 +50,10 @@ public class SpellRegistry {
         return getSpell(new ResourceLocation(spellId));
     }
 
+    public static List<AbstractSpell> getAllSpells() {
+        return SPELLS.getEntries().stream().map(RegistryObject::get).toList();
+    }
+
     public static List<AbstractSpell> getEnabledSpells() {
         return SpellRegistry.REGISTRY.get()
                 .getValues()

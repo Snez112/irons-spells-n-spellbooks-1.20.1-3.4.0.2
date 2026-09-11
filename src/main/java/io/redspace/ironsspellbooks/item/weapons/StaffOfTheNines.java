@@ -75,7 +75,6 @@ public class StaffOfTheNines extends Item {
         return new Vec3(vec3.x + d0, vec3.y + d1, vec3.z + d2);
     }
 
-    @Override
     @OnlyIn(Dist.CLIENT)
     public void initializeClient(Consumer<IClientItemExtensions> consumer) {
         StaffArmPose.initializeClientHelper(consumer);

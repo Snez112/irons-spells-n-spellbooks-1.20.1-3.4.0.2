@@ -27,7 +27,7 @@ public class SpellDamageSource extends DamageSource {
     @Override
     public @NotNull Component getLocalizedDeathMessage(@NotNull LivingEntity pLivingEntity) {
         String s = "death.attack." + spell.getDeathMessageId();
-        Component component = this.causingEntity == null ? this.directEntity.getDisplayName() : this.causingEntity.getDisplayName();
+        Component component = this.getEntity() == null ? (this.getDirectEntity() != null ? this.getDirectEntity().getDisplayName() : pLivingEntity.getDisplayName()) : this.getEntity().getDisplayName();
         return Component.translatable(s, pLivingEntity.getDisplayName(), component);
     }
 

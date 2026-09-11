@@ -131,7 +131,7 @@ public final class ClientInputEvents {
     private static void handleRightClickSuppression(int button, int action) {
         //IronsSpellbooks.LOGGER.debug("ClientInputEvents.handleRightClickSuppression {} {}", button, action);
         if (useKeyId == Integer.MIN_VALUE) {
-            useKeyId = Minecraft.getInstance().options.keyUse.getKey().getValue();
+            useKeyId = Minecraft.getInstance().options.keyUse.key.getValue();
         }
 
         if (button == useKeyId) {

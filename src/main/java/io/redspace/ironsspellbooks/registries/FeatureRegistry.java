@@ -50,15 +50,15 @@ public class FeatureRegistry {
     }
 
     public static void bootstrapPlacedFeature(BootstapContext<PlacedFeature> context) {
-        HolderGetter<ConfiguredFeature<?, ?>> holdergetter = context.lookup(CONFIGURED_FEATURES.getRegistryKey());
+        HolderGetter<ConfiguredFeature<?, ?>> holdergetter = context.lookup(Registries.CONFIGURED_FEATURE);
         Holder<ConfiguredFeature<?, ?>> holderArcaneDebris = holdergetter.getOrThrow(ARCANE_DEBRIS_FEATURE);
         List<PlacementModifier> list = List.of(CountPlacement.of(7), InSquarePlacement.spread(), HeightRangePlacement.uniform(VerticalAnchor.absolute(-63), VerticalAnchor.absolute(-38)), BiomeFilter.biome());
         PlacementUtils.register(context, ARCANE_DEBRIS_PLACEMENT, holderArcaneDebris, list);
     }
 
     public static void bootstrapBiomeModifier(final BootstapContext<BiomeModifier> context) {
-        final var biomes = context.lookup(ForgeRegistries.BIOMES.getRegistryKey());
-        final var features = context.lookup(PLACED_FEATURES.getRegistryKey());
+        final var biomes = context.lookup(Registries.BIOME);
+        final var features = context.lookup(Registries.PLACED_FEATURE);
 
         context.register(ADD_ARCANE_DEBRIS_ORE,
                 new ForgeBiomeModifiers.AddFeaturesBiomeModifier(
@@ -70,11 +70,11 @@ public class FeatureRegistry {
     }
 
     private static ResourceKey<ConfiguredFeature<?, ?>> configuredFeatureResourceKey(final String name) {
-        return ResourceKey.create(CONFIGURED_FEATURES.getRegistryKey(), new ResourceLocation(IronsSpellbooks.MODID, name));
+        return ResourceKey.create(Registries.CONFIGURED_FEATURE, new ResourceLocation(IronsSpellbooks.MODID, name));
     }
 
     private static ResourceKey<PlacedFeature> placedFeatureResourceKey(final String name) {
-        return ResourceKey.create(PLACED_FEATURES.getRegistryKey(), new ResourceLocation(IronsSpellbooks.MODID, name));
+        return ResourceKey.create(Registries.PLACED_FEATURE, new ResourceLocation(IronsSpellbooks.MODID, name));
     }
 
     private static ResourceKey<BiomeModifier> biomeModifierResourceKey(final String name) {

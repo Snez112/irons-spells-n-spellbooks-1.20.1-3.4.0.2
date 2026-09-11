@@ -16,19 +16,19 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.levelgen.structure.Structure;
 
 public class ModTags {
-    public static final TagKey<Item> SCHOOL_FOCUS = ItemTags.create(new ResourceLocation(IronsSpellbooks.MODID, "school_focus"));
-    public static final TagKey<Item> FIRE_FOCUS = ItemTags.create(new ResourceLocation(IronsSpellbooks.MODID, "fire_focus"));
-    public static final TagKey<Item> ICE_FOCUS = ItemTags.create(new ResourceLocation(IronsSpellbooks.MODID, "ice_focus"));
-    public static final TagKey<Item> LIGHTNING_FOCUS = ItemTags.create(new ResourceLocation(IronsSpellbooks.MODID, "lightning_focus"));
-    public static final TagKey<Item> ENDER_FOCUS = ItemTags.create(new ResourceLocation(IronsSpellbooks.MODID, "ender_focus"));
-    public static final TagKey<Item> HOLY_FOCUS = ItemTags.create(new ResourceLocation(IronsSpellbooks.MODID, "holy_focus"));
-    public static final TagKey<Item> BLOOD_FOCUS = ItemTags.create(new ResourceLocation(IronsSpellbooks.MODID, "blood_focus"));
-    public static final TagKey<Item> EVOCATION_FOCUS = ItemTags.create(new ResourceLocation(IronsSpellbooks.MODID, "evocation_focus"));
-    public static final TagKey<Item> ELDRITCH_FOCUS = ItemTags.create(new ResourceLocation(IronsSpellbooks.MODID, "eldritch_focus"));
-    public static final TagKey<Item> NATURE_FOCUS = ItemTags.create(new ResourceLocation(IronsSpellbooks.MODID, "nature_focus"));
-    public static final TagKey<Item> INSCRIBED_RUNES = ItemTags.create(new ResourceLocation(IronsSpellbooks.MODID, "inscribed_rune"));
-    public static final TagKey<Block> SPECTRAL_HAMMER_MINEABLE = BlockTags.create(new ResourceLocation(IronsSpellbooks.MODID, "spectral_hammer_mineable"));
-    public static final TagKey<Block> GUARDED_BY_WIZARDS = BlockTags.create(new ResourceLocation(IronsSpellbooks.MODID, "guarded_by_wizards"));
+    public static final TagKey<Item> SCHOOL_FOCUS = TagKey.create(Registries.ITEM, new ResourceLocation(IronsSpellbooks.MODID, "school_focus"));
+    public static final TagKey<Item> FIRE_FOCUS = TagKey.create(Registries.ITEM, new ResourceLocation(IronsSpellbooks.MODID, "fire_focus"));
+    public static final TagKey<Item> ICE_FOCUS = TagKey.create(Registries.ITEM, new ResourceLocation(IronsSpellbooks.MODID, "ice_focus"));
+    public static final TagKey<Item> LIGHTNING_FOCUS = TagKey.create(Registries.ITEM, new ResourceLocation(IronsSpellbooks.MODID, "lightning_focus"));
+    public static final TagKey<Item> ENDER_FOCUS = TagKey.create(Registries.ITEM, new ResourceLocation(IronsSpellbooks.MODID, "ender_focus"));
+    public static final TagKey<Item> HOLY_FOCUS = TagKey.create(Registries.ITEM, new ResourceLocation(IronsSpellbooks.MODID, "holy_focus"));
+    public static final TagKey<Item> BLOOD_FOCUS = TagKey.create(Registries.ITEM, new ResourceLocation(IronsSpellbooks.MODID, "blood_focus"));
+    public static final TagKey<Item> EVOCATION_FOCUS = TagKey.create(Registries.ITEM, new ResourceLocation(IronsSpellbooks.MODID, "evocation_focus"));
+    public static final TagKey<Item> ELDRITCH_FOCUS = TagKey.create(Registries.ITEM, new ResourceLocation(IronsSpellbooks.MODID, "eldritch_focus"));
+    public static final TagKey<Item> NATURE_FOCUS = TagKey.create(Registries.ITEM, new ResourceLocation(IronsSpellbooks.MODID, "nature_focus"));
+    public static final TagKey<Item> INSCRIBED_RUNES = TagKey.create(Registries.ITEM, new ResourceLocation(IronsSpellbooks.MODID, "inscribed_rune"));
+    public static final TagKey<Block> SPECTRAL_HAMMER_MINEABLE = TagKey.create(Registries.BLOCK, new ResourceLocation(IronsSpellbooks.MODID, "spectral_hammer_mineable"));
+    public static final TagKey<Block> GUARDED_BY_WIZARDS = TagKey.create(Registries.BLOCK, new ResourceLocation(IronsSpellbooks.MODID, "guarded_by_wizards"));
 
     public static final TagKey<Structure> WAYWARD_COMPASS_LOCATOR = TagKey.create(Registries.STRUCTURE, new ResourceLocation(IronsSpellbooks.MODID, "wayward_compass_locator"));
 
@@ -39,7 +39,10 @@ public class ModTags {
 
     public static final TagKey<Biome> NO_DEFAULT_SPAWNS = TagKey.create(Registries.BIOME, new ResourceLocation("forge", "no_default_monsters"));
 
-    private static TagKey<DamageType> create(String tag) {
+    private static TagKey<DamageType> createDamageType(String tag) {
         return TagKey.create(Registries.DAMAGE_TYPE, new ResourceLocation(IronsSpellbooks.MODID, tag));
     }
+
+    public static final TagKey<DamageType> BYPASS_EVASION = createDamageType("bypass_evasion");
+    public static final TagKey<DamageType> LONG_CAST_IGNORE = createDamageType("long_cast_ignore");
 }

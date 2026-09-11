@@ -369,7 +369,7 @@ public class AdditionalWanderingTrades {
                 return true;
             } else {
                 ItemStack itemstack = pOffer.copy();
-                if (itemstack.getItem().isDamageable(itemstack)) {
+                if (itemstack.isDamageableItem()) {
                     itemstack.setDamageValue(itemstack.getDamageValue());
                 }
 

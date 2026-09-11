@@ -15,12 +15,10 @@ public class DragonskinItem extends Item {
         super(ItemPropertiesHelper.material());
     }
 
-    @Override
     public boolean hasCustomEntity(ItemStack stack) {
         return true;
     }
 
-    @Override
     public Entity createEntity(Level world, Entity entity, ItemStack itemstack) {
         if (!world.getEntitiesOfClass(EnderDragon.class, entity.getBoundingBox().inflate(5)).isEmpty()) {
             entity.setNoGravity(true);

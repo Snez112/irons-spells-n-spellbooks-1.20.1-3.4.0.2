@@ -5,16 +5,20 @@
   "compatibilityLevel": "JAVA_17",
   "mixins": [
     "AttributesMixin",
+    "AttributeSupplierAccessor",
     "BeardifierMixin",
+    "CollisionContextMixin",
     "CreeperMixin",
     "DataFixLevelStorageSourceMixin",
     "DataFixPlayerDataStorageMixin",
+    "DefaultAttributesMixin",
     "EntityMixin",
     "ItemMixin",
     "ItemStackMixin",
     "LivingEntityMixin",
     "MobEffectMixin",
     "PlayerMixin",
+    "StructureTemplatePoolAccessor",
     "TridentItemMixin"
   ],
   "client": [
@@ -22,6 +26,7 @@
     "ClientEntityMixin",
     "EntityRendererMixin",
     "GuiMixin",
+    "LivingEntityRendererMixin",
     "LocalPlayerMixin",
     "MinecraftMixin",
     "ParticleMixin",

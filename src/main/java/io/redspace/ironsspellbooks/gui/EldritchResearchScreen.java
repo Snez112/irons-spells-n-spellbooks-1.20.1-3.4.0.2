@@ -377,8 +377,7 @@ public class EldritchResearchScreen extends Screen {
 
 
     public boolean keyPressed(int pKeyCode, int pScanCode, int pModifiers) {
-        InputConstants.Key mouseKey = InputConstants.getKey(pKeyCode, pScanCode);
-        if (this.minecraft.options.keyInventory.isActiveAndMatches(mouseKey)) {
+        if (this.minecraft.options.keyInventory.matches(pKeyCode, pScanCode)) {
             this.onClose();
             return true;
         }

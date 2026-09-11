@@ -25,14 +25,13 @@ public class DataGenerators {
     @SubscribeEvent
     public static void gatherData(GatherDataEvent event) {
         DataGenerator generator = event.getGenerator();
-        PackOutput output = event.getGenerator().getPackOutput();
+        PackOutput output = event.getPackOutput();
         CompletableFuture<HolderLookup.Provider> provider = event.getLookupProvider();
         ExistingFileHelper helper = event.getExistingFileHelper();
 
         RegistryDataGenerator.addProviders(event.includeServer(), generator, output, provider, helper);
-        generator.addProvider(true, new PackMetadataGenerator(output).add(PackMetadataSection.TYPE, new PackMetadataSection(
+        generator.getVanillaPack(true).addProvider(out -> new PackMetadataGenerator(out).add(PackMetadataSection.TYPE, new PackMetadataSection(
                 Component.literal("Resources for Iron's Spells N Spellbooks"),
-                DetectedVersion.BUILT_IN.getPackVersion(PackType.CLIENT_RESOURCES),
-                Arrays.stream(PackType.values()).collect(Collectors.toMap(Function.identity(), DetectedVersion.BUILT_IN::getPackVersion)))));
+                DetectedVersion.BUILT_IN.getPackVersion(PackType.CLIENT_RESOURCES))));
     }
 }

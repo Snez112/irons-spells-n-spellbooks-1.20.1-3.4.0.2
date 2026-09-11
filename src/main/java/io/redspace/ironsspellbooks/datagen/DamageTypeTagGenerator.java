@@ -17,7 +17,7 @@ import org.jetbrains.annotations.NotNull;
 
 public class DamageTypeTagGenerator extends TagsProvider<DamageType> {
     public DamageTypeTagGenerator(PackOutput output, CompletableFuture<Provider> lookupProvider, ExistingFileHelper existingFileHelper) {
-        super(output, Registries.DAMAGE_TYPE, lookupProvider, IronsSpellbooks.MODID, existingFileHelper);
+        super(output, Registries.DAMAGE_TYPE, lookupProvider);
     }
 
     private static TagKey<DamageType> create(String name) {

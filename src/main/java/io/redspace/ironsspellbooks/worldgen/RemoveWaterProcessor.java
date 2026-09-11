@@ -31,6 +31,11 @@ public class RemoveWaterProcessor extends StructureProcessor {
 
     @Nullable
     @Override
+    public StructureTemplate.StructureBlockInfo processBlock(LevelReader level, BlockPos jigsawPiecePos, BlockPos pivot, StructureTemplate.StructureBlockInfo blockInfoLocal, StructureTemplate.StructureBlockInfo blockInfoGlobal, StructurePlaceSettings settings) {
+        return process(level, jigsawPiecePos, pivot, blockInfoLocal, blockInfoGlobal, settings, null);
+    }
+
+    @Nullable
     public StructureTemplate.StructureBlockInfo process(@Nonnull LevelReader level, @Nonnull BlockPos jigsawPiecePos, @Nonnull BlockPos jigsawPieceBottomCenterPos, @Nonnull StructureTemplate.StructureBlockInfo blockInfoLocal, @Nonnull StructureTemplate.StructureBlockInfo blockInfoGlobal, @Nonnull StructurePlaceSettings settings, @Nullable StructureTemplate template) {
         if (blockInfoGlobal.state().hasProperty(BlockStateProperties.WATERLOGGED) && !blockInfoGlobal.state().getValue(BlockStateProperties.WATERLOGGED)) {
             ChunkPos chunkPos = new ChunkPos(blockInfoGlobal.pos());

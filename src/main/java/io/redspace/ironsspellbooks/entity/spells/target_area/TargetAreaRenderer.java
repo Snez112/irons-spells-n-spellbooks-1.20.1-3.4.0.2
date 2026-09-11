@@ -53,9 +53,9 @@ public class TargetAreaRenderer extends EntityRenderer<TargetedAreaEntity> {
             int degrees = i * 60;
             float x = radius * Mth.cos(degrees * Mth.DEG_TO_RAD);
             float z = radius * Mth.sin(degrees * Mth.DEG_TO_RAD);
-            float y = Utils.findRelativeGroundLevel(entity.level, entity.position().add(x, entity.getBbHeight(), z), (int) (entity.getBbHeight() * 4));
+            float y = Utils.findRelativeGroundLevel(entity.level, entity.position().add(x, entity.getBbHeight(), z), (int) (entity.getBbHeight() * 4), entity);
             heights[i] = y - entityY;
-            if (entity.level.collidesWithSuffocatingBlock(null, AABB.ofSize(new Vec3(x, y, z), .1, .1, .1))) {
+            if (entity.level.collidesWithSuffocatingBlock(entity, AABB.ofSize(new Vec3(x, y, z), .1, .1, .1))) {
                 heights[i] = 0;
             }
             //entity.level.addParticle(ParticleHelper.EMBERS, x + entity.getX(), heights[i] + entityY, z + entity.getZ(), 0, 0, 0);

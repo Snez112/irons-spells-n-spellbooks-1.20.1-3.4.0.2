@@ -90,20 +90,20 @@ public class RecallSpell extends AbstractSpell {
             if (spawnLocation.isPresent()) {
                 Vec3 vec3 = spawnLocation.get();
                 //IronsSpellbooks.LOGGER.debug("Recall.onCast.a dimension: {} -> {}", serverPlayer.level.dimension(), respawnLevel.dimension());
-                if (serverPlayer.level.dimension() != respawnLevel.dimension()) {
-                    serverPlayer.changeDimension(respawnLevel, new PortalTeleporter(vec3));
+                if (serverPlayer.level().dimension() != respawnLevel.dimension()) {
+                    serverPlayer.teleportTo(respawnLevel, vec3.x, vec3.y, vec3.z, serverPlayer.getYRot(), serverPlayer.getXRot());
                 } else {
                     serverPlayer.teleportTo(vec3.x, vec3.y, vec3.z);
                 }
             } else {
                 respawnLevel = world.getServer().overworld();
-                //IronsSpellbooks.LOGGER.debug("Recall.onCast.b dimension: {} -> {}", serverPlayer.level.dimension(), respawnLevel.dimension());
-                if (serverPlayer.level.dimension() != respawnLevel.dimension()) {
-                    serverPlayer.changeDimension(respawnLevel, new PortalTeleporter(Vec3.ZERO));
+                var pos = respawnLevel.getSharedSpawnPos();
+                if (serverPlayer.level().dimension() != respawnLevel.dimension()) {
+                    serverPlayer.teleportTo(respawnLevel, pos.getX(), pos.getY(), pos.getZ(), serverPlayer.getYRot(), serverPlayer.getXRot());
+                } else {
+                    serverPlayer.teleportTo(pos.getX(), pos.getY(), pos.getZ());
                 }
                 serverPlayer.connection.send(new ClientboundGameEventPacket(ClientboundGameEventPacket.NO_RESPAWN_BLOCK_AVAILABLE, 0.0F));
-                var pos = respawnLevel.getSharedSpawnPos();
-                serverPlayer.teleportTo(pos.getX(), pos.getY(), pos.getZ());
             }
         } else if (entity instanceof HomeOwner homeOwner && homeOwner.getHome() != null) {
             //no dimension check because lazy

@@ -21,7 +21,6 @@ import io.redspace.ironsspellbooks.config.ServerConfigs;
 import io.redspace.ironsspellbooks.data.DataFixerStorage;
 import io.redspace.ironsspellbooks.data.IronsDataStorage;
 import io.redspace.ironsspellbooks.datafix.IronsWorldUpgrader;
-import io.redspace.ironsspellbooks.datagen.DamageTypeTagGenerator;
 import io.redspace.ironsspellbooks.effect.AbyssalShroudEffect;
 import io.redspace.ironsspellbooks.effect.EvasionEffect;
 import io.redspace.ironsspellbooks.effect.SpiderAspectEffect;
@@ -237,12 +236,16 @@ public class ServerPlayerEvents {
     @SubscribeEvent
     public static void onPlayerLoggedIn(PlayerEvent.PlayerLoggedInEvent event) {
         if (event.getEntity() instanceof ServerPlayer serverPlayer) {
-            var playerMagicData = MagicData.getPlayerMagicData(serverPlayer);
-            playerMagicData.getPlayerCooldowns().syncToPlayer(serverPlayer);
-            playerMagicData.getPlayerRecasts().syncAllToPlayer();
-            playerMagicData.getSyncedData().syncToPlayer(serverPlayer);
-            Messages.sendToPlayer(new ClientboundSyncMana(playerMagicData), serverPlayer);
-            CameraShakeManager.doSync(serverPlayer);
+            try {
+                var playerMagicData = MagicData.getPlayerMagicData(serverPlayer);
+                playerMagicData.getPlayerCooldowns().syncToPlayer(serverPlayer);
+                playerMagicData.getPlayerRecasts().syncAllToPlayer();
+                playerMagicData.getSyncedData().syncToPlayer(serverPlayer);
+                Messages.sendToPlayer(new ClientboundSyncMana(playerMagicData), serverPlayer);
+                CameraShakeManager.doSync(serverPlayer);
+            } catch (Exception e) {
+                IronsSpellbooks.LOGGER.error("Error during onPlayerLoggedIn sync", e);
+            }
         }
     }
 
@@ -265,14 +268,12 @@ public class ServerPlayerEvents {
                     newServerPlayer.addEffect(effect, newServerPlayer);
                 }
             }));
-            event.getOriginal().reviveCaps();
             MagicData oldMagicData = MagicData.getPlayerMagicData(event.getOriginal());
             MagicData newMagicData = MagicData.getPlayerMagicData(event.getEntity());
             //TODO: Vanilla does not persist mobeffects, even with keepinventory. Should we?
             newMagicData.setSyncedData(/*keepEverything ? oldMagicData.getSyncedData() : */oldMagicData.getSyncedData().getPersistentData());
             newMagicData.getSyncedData().doSync();
             oldMagicData.getPlayerCooldowns().getSpellCooldowns().forEach((spellId, cooldown) -> newMagicData.getPlayerCooldowns().getSpellCooldowns().put(spellId, cooldown));
-            event.getOriginal().invalidateCaps();
         }
     }
 
@@ -405,7 +406,7 @@ public class ServerPlayerEvents {
             if (playerMagicData.isCasting() &&
                     playerMagicData.getCastingSpell().getSpell().canBeInterrupted(serverPlayer) &&
                     playerMagicData.getCastDurationRemaining() > 0 &&
-                    !event.getSource().is(DamageTypeTagGenerator.LONG_CAST_IGNORE) &&
+                    !event.getSource().is(ModTags.LONG_CAST_IGNORE) &&
                     !playerMagicData.popMarkedPoison()) {
                 Utils.serverSideCancelCast(serverPlayer);
             }
@@ -428,7 +429,7 @@ public class ServerPlayerEvents {
 
     @SubscribeEvent
     public static void preventDismount(EntityMountEvent event) {
-        if (!event.getEntity().level.isClientSide && event.getEntityBeingMounted() instanceof PreventDismount && event.isDismounting() && !event.getEntityBeingMounted().isRemoved()) {
+        if (!event.getEntity().level().isClientSide && event.getEntityBeingMounted() instanceof PreventDismount && event.isDismounting() && !event.getEntityBeingMounted().isRemoved()) {
             event.setCanceled(true);
         }
     }
@@ -441,7 +442,7 @@ public class ServerPlayerEvents {
             if (victim instanceof IMagicEntity || victim instanceof Player) {
                 //IronsSpellbooks.LOGGER.debug("onProjectileImpact: is a casting mob");
                 var livingEntity = (LivingEntity) victim;
-                SyncedSpellData syncedSpellData = livingEntity.level.isClientSide ? ClientMagicData.getSyncedSpellData(livingEntity) : MagicData.getPlayerMagicData(livingEntity).getSyncedData();
+                SyncedSpellData syncedSpellData = livingEntity.level().isClientSide ? ClientMagicData.getSyncedSpellData(livingEntity) : MagicData.getPlayerMagicData(livingEntity).getSyncedData();
                 if (syncedSpellData.hasEffect(SyncedSpellData.EVASION)) {
                     //IronsSpellbooks.LOGGER.debug("onProjectileImpact: evasion");
                     if (EvasionEffect.doEffect(livingEntity, victim.damageSources().indirectMagic(event.getProjectile(), event.getProjectile().getOwner()))) {

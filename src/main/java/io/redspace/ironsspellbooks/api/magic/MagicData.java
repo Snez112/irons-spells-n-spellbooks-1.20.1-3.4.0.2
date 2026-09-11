@@ -253,19 +253,18 @@ public class MagicData {
         if (livingEntity instanceof IMagicEntity magicEntity) {
             return magicEntity.getMagicData();
         } else if (livingEntity instanceof ServerPlayer serverPlayer) {
-
-            var capContainer = serverPlayer.getCapability(PlayerMagicProvider.PLAYER_MAGIC);
+            var capContainer = net.minecraftforge.common.capabilities.CapabilityManager.get(serverPlayer, PlayerMagicProvider.PLAYER_MAGIC);
             if (capContainer.isPresent()) {
                 var opt = capContainer.resolve();
-                if (opt.isEmpty()) {
-                    return new MagicData(serverPlayer);
+                if (opt.isPresent()) {
+                    var pmd = opt.get();
+                    pmd.setServerPlayer(serverPlayer);
+                    return pmd;
                 }
-
-                var pmd = opt.get();
-                pmd.setServerPlayer(serverPlayer);
-                return pmd;
             }
-            return new MagicData(serverPlayer);
+            MagicData pmd = new MagicData(serverPlayer);
+            net.minecraftforge.common.capabilities.CapabilityManager.attach(serverPlayer, PlayerMagicProvider.PLAYER_MAGIC, net.minecraftforge.common.util.LazyOptional.of(() -> pmd));
+            return pmd;
         } else {
             return new MagicData(true);
         }
@@ -286,19 +285,28 @@ public class MagicData {
     }
 
     public void loadNBTData(CompoundTag compound) {
-        mana = compound.getInt(MANA);
+        if (compound == null) return;
+        try {
+            mana = compound.getInt(MANA);
 
-        var listTag = (ListTag) compound.get(COOLDOWNS);
-        if (listTag != null && !listTag.isEmpty()) {
-            playerCooldowns.loadNBTData(listTag);
+            if (compound.contains(COOLDOWNS, net.minecraft.nbt.Tag.TAG_LIST)) {
+                ListTag listTag = compound.getList(COOLDOWNS, net.minecraft.nbt.Tag.TAG_COMPOUND);
+                if (!listTag.isEmpty()) {
+                    playerCooldowns.loadNBTData(listTag);
+                }
+            }
+
+            if (compound.contains(RECASTS, net.minecraft.nbt.Tag.TAG_LIST)) {
+                ListTag listTag = compound.getList(RECASTS, net.minecraft.nbt.Tag.TAG_COMPOUND);
+                if (!listTag.isEmpty()) {
+                    playerRecasts.loadNBTData(listTag);
+                }
+            }
+
+            getSyncedData().loadNBTData(compound);
+        } catch (Exception e) {
+            io.redspace.ironsspellbooks.IronsSpellbooks.LOGGER.error("Error loading MagicData from NBT", e);
         }
-
-        listTag = (ListTag) compound.get(RECASTS);
-        if (listTag != null && !listTag.isEmpty()) {
-            playerRecasts.loadNBTData(listTag);
-        }
-
-        getSyncedData().loadNBTData(compound);
     }
 
     @Override

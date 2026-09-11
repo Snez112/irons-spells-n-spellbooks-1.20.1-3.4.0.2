@@ -53,13 +53,16 @@ public class MagicManager implements IMagicManager {
                 if (playerMagicData.isCasting()) {
                     playerMagicData.handleCastDuration();
                     var spell = SpellRegistry.getSpell(playerMagicData.getCastingSpellId());
-                    if ((spell.getCastType() == CastType.LONG && !serverPlayer.isUsingItem()) || spell.getCastType() == CastType.INSTANT) {
+                    if (spell.getCastType() == CastType.LONG || spell.getCastType() == CastType.INSTANT) {
                         if (playerMagicData.getCastDurationRemaining() <= 0) {
                             spell.castSpell(serverPlayer.level, playerMagicData.getCastingSpellLevel(), serverPlayer, playerMagicData.getCastSource(), true);
                             if (playerMagicData.getCastSource() == CastSource.SCROLL) {
                                 Scroll.attemptRemoveScrollAfterCast(serverPlayer);
                             }
                             spell.onServerCastComplete(serverPlayer.level, playerMagicData.getCastingSpellLevel(), serverPlayer, playerMagicData, false);
+                            if (serverPlayer.isUsingItem()) {
+                                serverPlayer.stopUsingItem();
+                            }
                         }
                     } else if (spell.getCastType() == CastType.CONTINUOUS) {
                         if ((playerMagicData.getCastDurationRemaining() + 1) % CONTINUOUS_CAST_TICK_INTERVAL == 0) {

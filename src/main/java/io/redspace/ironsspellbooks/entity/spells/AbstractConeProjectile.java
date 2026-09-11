@@ -65,12 +65,10 @@ public abstract class AbstractConeProjectile extends Projectile implements NoKno
     @Override
     protected abstract void onHitEntity(EntityHitResult entityHitResult);
 
-    @Override
     public boolean isMultipartEntity() {
         return true;
     }
 
-    @Override
     public PartEntity<?>[] getParts() {
         return this.subEntities;
     }

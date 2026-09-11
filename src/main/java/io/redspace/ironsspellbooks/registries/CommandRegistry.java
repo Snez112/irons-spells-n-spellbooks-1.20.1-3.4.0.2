@@ -9,6 +9,9 @@ import net.minecraftforge.fml.loading.FMLLoader;
 
 @Mod.EventBusSubscriber()
 public class CommandRegistry {
+    public static void register(net.minecraftforge.eventbus.api.IEventBus bus) {
+    }
+
     @SubscribeEvent
     public static void onCommandsRegister(RegisterCommandsEvent event) {
 

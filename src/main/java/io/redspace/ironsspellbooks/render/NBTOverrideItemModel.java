@@ -29,7 +29,7 @@ public abstract class NBTOverrideItemModel implements BakedModel {
 
     public NBTOverrideItemModel(BakedModel original, ModelBakery loader) {
         this.original = original;
-        BlockModel missing = (BlockModel) loader.getModel(ModelBakery.MISSING_MODEL_LOCATION);
+        BlockModel missing = loader != null ? (BlockModel) loader.getModel(ModelBakery.MISSING_MODEL_LOCATION) : null;
 
         this.itemOverrides = new ItemOverrides(new ModelBaker() {
             public Function<Material, TextureAtlasSprite> getModelTextureGetter() {
@@ -54,9 +54,12 @@ public abstract class NBTOverrideItemModel implements BakedModel {
                     var override = getModelFromTag(itemStack, itemStack.getTag());
                     if (override.isPresent()) {
                         var manager = Minecraft.getInstance().getModelManager();
-                        var missing = manager.getModel(ModelBakery.MISSING_MODEL_LOCATION);
-                        var model = manager.getModel(override.get());
-                        return model == missing ? original : model;
+                        var loc = override.get();
+                        var model = manager.getModel(new ModelResourceLocation(loc, "inventory"));
+                        if (model == null || model == manager.getMissingModel()) {
+                            model = manager.getModel(loc);
+                        }
+                        return (model == null || model == manager.getMissingModel()) ? original : model;
                     }
                 }
 

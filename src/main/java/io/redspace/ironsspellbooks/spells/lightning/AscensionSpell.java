@@ -94,7 +94,6 @@ public class AscensionSpell extends AbstractSpell {
 
         LightningBolt lightningBolt = EntityType.LIGHTNING_BOLT.create(level);
         lightningBolt.setVisualOnly(true);
-        lightningBolt.setDamage(0);
         lightningBolt.setPos(strikePos);
         level.addFreshEntity(lightningBolt);
 

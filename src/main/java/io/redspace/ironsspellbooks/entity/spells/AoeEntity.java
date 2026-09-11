@@ -166,7 +166,6 @@ public abstract class AoeEntity extends Projectile implements NoKnockbackProject
         return 1f;
     }
 
-    @Override
     public boolean isPushedByFluid(FluidType type) {
         return false;
     }

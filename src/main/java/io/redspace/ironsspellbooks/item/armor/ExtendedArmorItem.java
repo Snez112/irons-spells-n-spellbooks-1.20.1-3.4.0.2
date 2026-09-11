@@ -87,7 +87,6 @@ public abstract class ExtendedArmorItem extends ArmorItem implements GeoItem {
         return PlayState.CONTINUE;
     }
 
-    @Override
     public void onArmorTick(ItemStack stack, Level world, Player player) {
         if (!world.isClientSide()) {
             if (hasFullSuitOfArmorOn(player)) {
@@ -148,7 +147,30 @@ public abstract class ExtendedArmorItem extends ArmorItem implements GeoItem {
         return this.cache;
     }
 
+    private final java.util.function.Supplier<Object> renderProvider = GeoItem.makeRenderer(this);
+
     @Override
+    public void createRenderer(Consumer<Object> consumer) {
+        consumer.accept(new software.bernie.geckolib.animatable.client.RenderProvider() {
+            private GeoArmorRenderer<?> renderer;
+
+            @Override
+            @SuppressWarnings({"unchecked", "rawtypes"})
+            public @NotNull HumanoidModel<LivingEntity> getHumanoidArmorModel(LivingEntity livingEntity, ItemStack itemStack, EquipmentSlot equipmentSlot, HumanoidModel<LivingEntity> original) {
+                if (this.renderer == null)
+                    this.renderer = supplyRenderer();
+
+                this.renderer.prepForRender(livingEntity, itemStack, equipmentSlot, (HumanoidModel) original);
+                return (HumanoidModel) this.renderer;
+            }
+        });
+    }
+
+    @Override
+    public java.util.function.Supplier<Object> getRenderProvider() {
+        return this.renderProvider;
+    }
+
     public void initializeClient(Consumer<IClientItemExtensions> consumer) {
         consumer.accept(new IClientItemExtensions() {
             private GeoArmorRenderer<?> renderer;
@@ -158,10 +180,7 @@ public abstract class ExtendedArmorItem extends ArmorItem implements GeoItem {
                 if (this.renderer == null)
                     this.renderer = supplyRenderer();
 
-                // This prepares our GeoArmorRenderer for the current render frame.
-                // These parameters may be null however, so we don't do anything further with them
                 this.renderer.prepForRender(livingEntity, itemStack, equipmentSlot, original);
-
                 return this.renderer;
             }
         });

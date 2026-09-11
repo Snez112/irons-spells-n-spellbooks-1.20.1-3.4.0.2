@@ -75,7 +75,7 @@ public class FrozenHumanoid extends LivingEntity {
 //        this.setOldPosAndRot();
         if (entityToCopy.isBaby())
             this.entityData.set(DATA_IS_BABY, true);
-        if (entityToCopy.isPassenger() && (entityToCopy.getVehicle() != null && entityToCopy.getVehicle().shouldRiderSit()))
+        if (entityToCopy.isPassenger() && entityToCopy.getVehicle() != null)
             this.entityData.set(DATA_IS_SITTING, true);
 
         this.setYBodyRot(entityToCopy.yBodyRot);

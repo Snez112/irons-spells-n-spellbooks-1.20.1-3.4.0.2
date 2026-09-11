@@ -38,7 +38,6 @@ public class FireAleItem extends DrinkableItem {
     }
 
 
-    @Override
     public int getMaxStackSize(ItemStack stack) {
         return Items.POTION.getMaxStackSize();
     }

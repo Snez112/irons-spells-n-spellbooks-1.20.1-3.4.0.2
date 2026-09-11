@@ -29,10 +29,10 @@ public abstract class DataFixPlayerDataStorageMixin {
 
     @Inject(method = "load", at = @At("HEAD"))
     private void load(Player pPlayer, CallbackInfoReturnable<CompoundTag> cir) {
-        if (ServerConfigs.RUN_WORLD_UPGRADER.get()) {
-            File file1 = new File(this.playerDir, pPlayer.getStringUUID() + ".dat");
-            if (file1.exists() && file1.isFile()) {
-                try {
+        try {
+            if (Boolean.TRUE.equals(ServerConfigs.RUN_WORLD_UPGRADER.get())) {
+                File file1 = new File(this.playerDir, pPlayer.getStringUUID() + ".dat");
+                if (file1.exists() && file1.isFile()) {
                     synchronized (iron_sSpells_nSpellbooks$sync) {
                         var compoundTag1 = NbtIo.readCompressed(file1);
 
@@ -44,10 +44,10 @@ public abstract class DataFixPlayerDataStorageMixin {
                             IronsSpellbooks.LOGGER.debug("DataFixPlayerDataStorageMixin: Player inventory updated: {} updates", ironsTraverser.totalChanges());
                         }
                     }
-                } catch (Exception exception) {
-                    IronsSpellbooks.LOGGER.debug("DataFixPlayerDataStorageMixin: Failed to load player data for {} {}", pPlayer.getName().getString(), exception.getMessage());
                 }
             }
+        } catch (Exception exception) {
+            IronsSpellbooks.LOGGER.debug("DataFixPlayerDataStorageMixin: Failed to load player data for {} {}", pPlayer.getName().getString(), exception.getMessage());
         }
     }
 }

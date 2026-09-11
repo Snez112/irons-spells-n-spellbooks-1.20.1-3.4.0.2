@@ -75,6 +75,10 @@ public class KeeperEntity extends AbstractSpellCastingMob implements Enemy, IAni
     }
 
     @Override
+    public float maxUpStep() {
+        return 1f;
+    }
+
     public float getStepHeight() {
         return 1f;
     }

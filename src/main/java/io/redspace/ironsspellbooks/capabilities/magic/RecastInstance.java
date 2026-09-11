@@ -1,5 +1,6 @@
 package io.redspace.ironsspellbooks.capabilities.magic;
 
+import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.network.ISerializable;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.api.spells.CastSource;
@@ -119,19 +120,28 @@ public class RecastInstance implements ISerializable, INBTSerializable<CompoundT
 
     @Override
     public void deserializeNBT(CompoundTag compoundTag) {
-        spellId = compoundTag.getString("spellId");
-        spellLevel = compoundTag.getInt("spellLevel");
-        remainingRecasts = compoundTag.getInt("remainingRecasts");
-        totalRecasts = compoundTag.getInt("totalRecasts");
-        ticksToLive = compoundTag.getInt("ticksToLive");
-        remainingTicks = compoundTag.getInt("ticksRemaining");
-        castSource = CastSource.valueOf(compoundTag.getString("castSource"));
-
-        if (compoundTag.contains("cd")) {
-            castData = SpellRegistry.getSpell(spellId).getEmptyCastData();
-            if (castData != null) {
-                castData.deserializeNBT((CompoundTag) compoundTag.get("cd"));
+        if (compoundTag == null) return;
+        try {
+            spellId = compoundTag.getString("spellId");
+            spellLevel = compoundTag.getInt("spellLevel");
+            remainingRecasts = compoundTag.getInt("remainingRecasts");
+            totalRecasts = compoundTag.getInt("totalRecasts");
+            ticksToLive = compoundTag.getInt("ticksToLive");
+            remainingTicks = compoundTag.getInt("ticksRemaining");
+            try {
+                castSource = CastSource.valueOf(compoundTag.getString("castSource"));
+            } catch (Exception e) {
+                castSource = CastSource.NONE;
             }
+
+            if (compoundTag.contains("cd")) {
+                castData = SpellRegistry.getSpell(spellId).getEmptyCastData();
+                if (castData != null && compoundTag.get("cd") instanceof CompoundTag cdTag) {
+                    castData.deserializeNBT(cdTag);
+                }
+            }
+        } catch (Exception e) {
+            IronsSpellbooks.LOGGER.error("Error deserializing RecastInstance", e);
         }
     }
 

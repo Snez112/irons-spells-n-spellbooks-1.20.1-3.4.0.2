@@ -17,7 +17,6 @@ public class FrostwardRing extends SimpleDescriptiveCurio {
         slotContext.entity().setTicksFrozen(0);
     }
 
-    @Override
     public boolean canWalkOnPowderedSnow(ItemStack stack, LivingEntity wearer) {
         return true;
     }

@@ -5,10 +5,8 @@ import io.redspace.ironsspellbooks.IronsSpellbooks;
 import net.minecraft.client.KeyMapping;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.RegisterKeyMappingsEvent;
-import net.minecraftforge.client.settings.KeyConflictContext;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import org.checkerframework.checker.units.qual.K;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,9 +16,9 @@ public final class KeyMappings {
     public static final String KEY_BIND_GENERAL_CATEGORY = "key.irons_spellbooks.group_1";
     public static final String KEY_BIND_QUICK_CAST_CATEGORY = "key.irons_spellbooks.group_2";
 
-    public static final KeyMapping SPELL_WHEEL_KEYMAP = new KeyMapping(getResourceName("spell_wheel"), KeyConflictContext.IN_GAME, InputConstants.Type.KEYSYM, InputConstants.KEY_R, KEY_BIND_GENERAL_CATEGORY);
-    public static final KeyMapping SPELLBOOK_CAST_ACTIVE_KEYMAP = new KeyMapping(getResourceName("spellbook_cast"), KeyConflictContext.IN_GAME, InputConstants.Type.KEYSYM, InputConstants.KEY_V, KEY_BIND_GENERAL_CATEGORY);
-    public static final KeyMapping SPELLBAR_SCROLL_MODIFIER_KEYMAP = new KeyMapping(getResourceName("spell_bar_modifier"), KeyConflictContext.IN_GAME, InputConstants.Type.KEYSYM, InputConstants.KEY_LALT, KEY_BIND_GENERAL_CATEGORY);
+    public static final KeyMapping SPELL_WHEEL_KEYMAP = new KeyMapping(getResourceName("spell_wheel"), InputConstants.Type.KEYSYM, InputConstants.KEY_R, KEY_BIND_GENERAL_CATEGORY);
+    public static final KeyMapping SPELLBOOK_CAST_ACTIVE_KEYMAP = new KeyMapping(getResourceName("spellbook_cast"), InputConstants.Type.KEYSYM, InputConstants.KEY_V, KEY_BIND_GENERAL_CATEGORY);
+    public static final KeyMapping SPELLBAR_SCROLL_MODIFIER_KEYMAP = new KeyMapping(getResourceName("spell_bar_modifier"), InputConstants.Type.KEYSYM, InputConstants.KEY_LALT, KEY_BIND_GENERAL_CATEGORY);
     public static final List<KeyMapping> QUICK_CAST_MAPPINGS = createQuickCastKeybinds();
 
     private static String getResourceName(String name) {
@@ -40,7 +38,7 @@ public final class KeyMappings {
     private static List<KeyMapping> createQuickCastKeybinds() {
         var qcm = new ArrayList<KeyMapping>();
         for (int i = 1; i <= 15; i++) {
-            qcm.add(new KeyMapping(getResourceName(String.format("spell_quick_cast_%d", i)), KeyConflictContext.IN_GAME, InputConstants.Type.KEYSYM, InputConstants.UNKNOWN.getValue(), KEY_BIND_QUICK_CAST_CATEGORY));
+            qcm.add(new KeyMapping(getResourceName(String.format("spell_quick_cast_%d", i)), InputConstants.Type.KEYSYM, InputConstants.UNKNOWN.getValue(), KEY_BIND_QUICK_CAST_CATEGORY));
         }
         return qcm;
     }

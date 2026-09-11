@@ -317,6 +317,9 @@ public class ClientSetup {
             ItemProperties.register(ItemRegistry.AUTOLOADER_CROSSBOW.get(), new ResourceLocation("firework"), (itemStack, clientLevel, livingEntity, i) -> livingEntity != null && CrossbowItem.isCharged(itemStack) && CrossbowItem.containsChargedProjectile(itemStack, Items.FIREWORK_ROCKET) ? 1.0F : 0.0F);
             FogRenderer.MOB_EFFECT_FOG.add(new PlanarSightEffect.EcholocationBlindnessFogFunction());
             ItemRegistry.getIronsItems().stream().filter(item -> item.get() instanceof SpellBook).forEach((item) -> CuriosRendererRegistry.register(item.get(), SpellBookCurioRenderer::new));
+            net.minecraft.client.gui.screens.MenuScreens.register(io.redspace.ironsspellbooks.registries.MenuRegistry.INSCRIPTION_TABLE_MENU.get(), io.redspace.ironsspellbooks.gui.inscription_table.InscriptionTableScreen::new);
+            net.minecraft.client.gui.screens.MenuScreens.register(io.redspace.ironsspellbooks.registries.MenuRegistry.SCROLL_FORGE_MENU.get(), io.redspace.ironsspellbooks.gui.scroll_forge.ScrollForgeScreen::new);
+            net.minecraft.client.gui.screens.MenuScreens.register(io.redspace.ironsspellbooks.registries.MenuRegistry.ARCANE_ANVIL_MENU.get(), io.redspace.ironsspellbooks.gui.arcane_anvil.ArcaneAnvilScreen::new);
         });
 
         PlayerAnimationFactory.ANIMATION_DATA_FACTORY.registerFactory(

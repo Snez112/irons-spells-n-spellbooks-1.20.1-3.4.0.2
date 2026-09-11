@@ -22,7 +22,6 @@ public class PumpkinArmorItem extends ExtendedArmorItem {
         super(ExtendedArmorMaterials.PUMPKIN, slot, settings);
     }
 
-    @Override
     public boolean isEnderMask(ItemStack stack, Player player, EnderMan endermanEntity) {
         return player.getItemBySlot(EquipmentSlot.HEAD).is(this);
     }

@@ -27,8 +27,6 @@ import net.minecraftforge.event.entity.EntityJoinLevelEvent;
 import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import org.openjdk.nashorn.internal.ir.EmptyNode;
-
 import java.util.*;
 
 @Mod.EventBusSubscriber
@@ -82,7 +80,8 @@ public class GuidingBoltManager implements INBTSerializable<CompoundTag> {
 
     @SubscribeEvent
     public static void onProjectileShot(EntityJoinLevelEvent event) {
-        if (event.getLevel() instanceof ServerLevel serverLevel) {
+        if (event.getLevel() instanceof ServerLevel) {
+            ServerLevel serverLevel = (ServerLevel) event.getLevel();
             if (!INSTANCE.trackedEntities.isEmpty() && event.getEntity() instanceof Projectile projectile) {
                 INSTANCE.dirtyProjectiles.computeIfAbsent(serverLevel.dimension(), (key) -> new ArrayList<>()).add(projectile);
             }
@@ -99,7 +98,7 @@ public class GuidingBoltManager implements INBTSerializable<CompoundTag> {
             var dirtyProjectiles = INSTANCE.dirtyProjectiles.getOrDefault(serverLevel.dimension(), List.of());
             for (int i = dirtyProjectiles.size() - 1; i >= 0; i--) {
                 var projectile = dirtyProjectiles.get(i);
-                if (projectile.isAddedToWorld()) {
+                if (projectile.isAlive()) {
                     Vec3 start = projectile.position();
                     int searchRange = 48;
                     Vec3 end = Utils.raycastForBlock(serverLevel, start, projectile.getDeltaMovement().normalize().scale(searchRange).add(start), ClipContext.Fluid.NONE).getLocation();

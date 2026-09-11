@@ -3,7 +3,7 @@ package io.redspace.ironsspellbooks.effect;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.capabilities.magic.SyncedSpellData;
-import io.redspace.ironsspellbooks.datagen.DamageTypeTagGenerator;
+import io.redspace.ironsspellbooks.util.ModTags;
 import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
 import net.minecraft.ChatFormatting;
 import net.minecraft.commands.arguments.EntityAnchorArgument;
@@ -51,7 +51,7 @@ public class EvasionEffect extends CustomDescriptionMobEffect {
         if (livingEntity.level.isClientSide
                 || damageSource.is(DamageTypeTags.IS_FALL)
                 || damageSource.is(DamageTypeTags.BYPASSES_INVULNERABILITY)
-                || damageSource.is(DamageTypeTagGenerator.BYPASS_EVASION)) {
+                || damageSource.is(ModTags.BYPASS_EVASION)) {
             return false;
         }
 

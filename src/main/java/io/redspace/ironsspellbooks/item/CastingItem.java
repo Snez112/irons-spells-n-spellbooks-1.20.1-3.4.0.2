@@ -37,26 +37,21 @@ public class CastingItem extends Item implements IMultihandWeapon {
         int spellLevel = spellData.getSpell().getLevelFor(spellData.getLevel(), player);
         if (level.isClientSide()) {
             if (ClientMagicData.isCasting()) {
-                //IronsSpellbooks.LOGGER.debug("CastingItem.Use.2 {} {}", level.isClientSide, hand);
-                return InteractionResultHolder.consume(itemStack);
+                return net.minecraft.world.item.ItemUtils.startUsingInstantly(level, player, hand);
             } else if (ClientMagicData.getPlayerMana() < spellData.getSpell().getManaCost(spellLevel)
                     || ClientMagicData.getCooldowns().isOnCooldown(spellData.getSpell())
                     || !ClientMagicData.getSyncedSpellData(player).isSpellLearned(spellData.getSpell())) {
-                //IronsSpellbooks.LOGGER.debug("CastingItem.Use.3 {} {}", level.isClientSide, hand);
-                //todo: initiate start using item on the client side to prevent the aternos bug?
                 return InteractionResultHolder.pass(itemStack);
             } else {
-                //IronsSpellbooks.LOGGER.debug("CastingItem.Use.4 {} {}", level.isClientSide, hand);
-                return InteractionResultHolder.consume(itemStack);
+                return net.minecraft.world.item.ItemUtils.startUsingInstantly(level, player, hand);
             }
         }
 
         var castingSlot = hand.ordinal() == 0 ? SpellSelectionManager.MAINHAND : SpellSelectionManager.OFFHAND;
 
         if (spellData.getSpell().attemptInitiateCast(itemStack, spellLevel, level, player, selectionOption.getCastSource(), true, castingSlot)) {
-            return InteractionResultHolder.consume(itemStack);
+            return net.minecraft.world.item.ItemUtils.startUsingInstantly(level, player, hand);
         } else {
-            //IronsSpellbooks.LOGGER.debug("CastingItem.Use.6 {} {}", level.isClientSide, hand);
             return InteractionResultHolder.fail(itemStack);
         }
     }
@@ -71,7 +66,6 @@ public class CastingItem extends Item implements IMultihandWeapon {
         return UseAnim.BOW;
     }
 
-    @Override
     public boolean shouldCauseReequipAnimation(ItemStack oldStack, ItemStack newStack, boolean slotChanged) {
         return slotChanged;
     }

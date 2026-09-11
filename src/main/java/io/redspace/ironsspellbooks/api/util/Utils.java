@@ -237,7 +237,8 @@ public class Utils {
                     end = shieldImpact.getLocation();
             }
         }
-        return level.clip(new ClipContext(start, end, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, null)).getType() == HitResult.Type.MISS;
+        Entity searchEntity = level.isClientSide ? io.redspace.ironsspellbooks.util.MinecraftInstanceHelper.getPlayer() : null;
+        return level.clip(new ClipContext(start, end, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, searchEntity)).getType() == HitResult.Type.MISS;
     }
 
     public static boolean hasLineOfSight(Level level, Entity entity1, Entity entity2, boolean checkForShields) {
@@ -245,13 +246,14 @@ public class Utils {
     }
 
     public static BlockHitResult raycastForBlock(Level level, Vec3 start, Vec3 end, ClipContext.Fluid clipContext) {
-        return level.clip(new ClipContext(start, end, ClipContext.Block.COLLIDER, clipContext, null));
+        Entity searchEntity = level.isClientSide ? io.redspace.ironsspellbooks.util.MinecraftInstanceHelper.getPlayer() : null;
+        return level.clip(new ClipContext(start, end, ClipContext.Block.COLLIDER, clipContext, searchEntity));
     }
 
     public static HitResult checkEntityIntersecting(Entity entity, Vec3 start, Vec3 end, float bbInflation) {
         Vec3 hitPos = null;
-        if (entity.isMultipartEntity()) {
-            for (PartEntity p : entity.getParts()) {
+        if (entity instanceof net.minecraft.world.entity.boss.enderdragon.EnderDragon dragon) {
+            for (var p : dragon.getSubEntities()) {
                 var hit = p.getBoundingBox().inflate(bbInflation).clip(start, end).orElse(null);
                 if (hit != null) {
                     hitPos = hit;
@@ -302,7 +304,7 @@ public class Utils {
     public static void releaseUsingHelper(LivingEntity entity, ItemStack itemStack, int ticksUsed) {
         if (entity instanceof ServerPlayer serverPlayer) {
             var pmd = MagicData.getPlayerMagicData(serverPlayer);
-            if (pmd.isCasting()) {
+            if (pmd.isCasting() && pmd.getCastDurationRemaining() > 0) {
                 Utils.serverSideCancelCast(serverPlayer);
                 serverPlayer.stopUsingItem();
             }
@@ -564,16 +566,49 @@ public class Utils {
      * From the given start position, this finds the first non-suffocating y level within +/- maxSteps, biased towards the ground
      */
     public static float findRelativeGroundLevel(Level level, Vec3 start, int maxSteps) {
-        if (level.getBlockState(BlockPos.containing(start)).isSuffocating(level, BlockPos.containing(start))) {
-            for (int i = 0; i < maxSteps; i++) {
-                start = start.add(0, 1, 0);
-                BlockPos pos = BlockPos.containing(start);
-                if (!level.getBlockState(pos).isSuffocating(level, pos)) {
-                    return pos.getY();
+        return findRelativeGroundLevel(level, start, maxSteps, null);
+    }
+
+    public static float findRelativeGroundLevel(Level level, Vec3 start, int maxSteps, @org.jetbrains.annotations.Nullable Entity entity) {
+        if (level == null) return (float) start.y;
+        BlockPos startPos = BlockPos.containing(start);
+        try {
+            if (level.getBlockState(startPos).isSuffocating(level, startPos)) {
+                for (int i = 0; i < maxSteps; i++) {
+                    start = start.add(0, 1, 0);
+                    BlockPos pos = BlockPos.containing(start);
+                    if (!level.getBlockState(pos).isSuffocating(level, pos)) {
+                        return pos.getY();
+                    }
                 }
             }
+        } catch (Exception ignored) {}
+
+        Entity searchEntity = entity;
+        if (searchEntity == null && level.isClientSide) {
+            searchEntity = io.redspace.ironsspellbooks.util.MinecraftInstanceHelper.getPlayer();
         }
-        return (float) level.clip(new ClipContext(start, start.add(0, -maxSteps, 0), ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, null)).getLocation().y;
+
+        if (searchEntity != null) {
+            try {
+                var hit = level.clip(new ClipContext(start, start.add(0, -maxSteps, 0), ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, searchEntity));
+                if (hit != null && hit.getType() != net.minecraft.world.phys.HitResult.Type.MISS) {
+                    return (float) hit.getLocation().y;
+                }
+            } catch (Exception ignored) {}
+        }
+
+        BlockPos.MutableBlockPos mpos = new BlockPos.MutableBlockPos(startPos.getX(), startPos.getY(), startPos.getZ());
+        for (int i = 0; i < maxSteps; i++) {
+            mpos.move(net.minecraft.core.Direction.DOWN);
+            try {
+                var state = level.getBlockState(mpos);
+                if (!state.isAir() && state.isSolid()) {
+                    return mpos.getY() + 1.0f;
+                }
+            } catch (Exception ignored) {}
+        }
+        return (float) (start.y - maxSteps);
     }
 
     public static Vec3 moveToRelativeGroundLevel(Level level, Vec3 start, int maxSteps) {
@@ -581,21 +616,33 @@ public class Utils {
     }
 
     public static Vec3 moveToRelativeGroundLevel(Level level, Vec3 start, int maxStepsUp, int maxStepsDown) {
-        BlockCollisions blockcollisions = new BlockCollisions(level, null, new AABB(0, 0, 0, .5, .5, .5).move(start), true, (p_286215_, p_286216_) -> {
-            return p_286216_;
-        });
-        if (blockcollisions.hasNext()) {
-            for (int i = 1; i < maxStepsUp; i++) {
-                blockcollisions = new BlockCollisions(level, null, new AABB(0, 0, 0, .5, .5, .5).move(start.add(0, i * .5, 0)), true, (p_286215_, p_286216_) -> {
-                    return p_286216_;
-                });
-                if (!blockcollisions.hasNext()) {
-                    start = start.add(0, i * .5, 0);
-                    break;
-                }
-            }
+        return moveToRelativeGroundLevel(level, start, maxStepsUp, maxStepsDown, null);
+    }
+
+    public static Vec3 moveToRelativeGroundLevel(Level level, Vec3 start, int maxStepsUp, int maxStepsDown, @org.jetbrains.annotations.Nullable Entity entity) {
+        Entity searchEntity = entity;
+        if (searchEntity == null && level.isClientSide) {
+            searchEntity = io.redspace.ironsspellbooks.util.MinecraftInstanceHelper.getPlayer();
         }
-        return level.clip(new ClipContext(start, start.add(0, -maxStepsDown, 0), ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, null)).getLocation();
+        if (searchEntity != null) {
+            try {
+                BlockCollisions blockcollisions = new BlockCollisions(level, searchEntity, new AABB(0, 0, 0, .5, .5, .5).move(start), true, (p_286215_, p_286216_) -> p_286216_);
+                if (blockcollisions.hasNext()) {
+                    for (int i = 1; i < maxStepsUp; i++) {
+                        blockcollisions = new BlockCollisions(level, searchEntity, new AABB(0, 0, 0, .5, .5, .5).move(start.add(0, i * .5, 0)), true, (p_286215_, p_286216_) -> p_286216_);
+                        if (!blockcollisions.hasNext()) {
+                            start = start.add(0, i * .5, 0);
+                            break;
+                        }
+                    }
+                }
+                var hit = level.clip(new ClipContext(start, start.add(0, -maxStepsDown, 0), ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, searchEntity));
+                if (hit != null && hit.getType() != net.minecraft.world.phys.HitResult.Type.MISS) {
+                    return hit.getLocation();
+                }
+            } catch (Exception ignored) {}
+        }
+        return new Vec3(start.x, findRelativeGroundLevel(level, start, maxStepsDown, searchEntity), start.z);
     }
 
     public static boolean checkMonsterSpawnRules(ServerLevelAccessor pLevel, MobSpawnType pSpawnType, BlockPos pPos, RandomSource pRandom) {
