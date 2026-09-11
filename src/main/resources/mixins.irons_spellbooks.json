@@ -30,7 +30,9 @@
     "LocalPlayerMixin",
     "MinecraftMixin",
     "ParticleMixin",
-    "SpinAttackEffectLayerMixin"
+    "SpinAttackEffectLayerMixin",
+    "KeyboardHandlerMixin",
+    "MouseHandlerMixin"
   ],
   "injectors": {
     "defaultRequire": 1

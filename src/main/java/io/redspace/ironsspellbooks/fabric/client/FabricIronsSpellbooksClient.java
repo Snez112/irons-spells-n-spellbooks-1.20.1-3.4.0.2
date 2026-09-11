@@ -52,6 +52,7 @@ public class FabricIronsSpellbooksClient implements ClientModInitializer {
                 }
             }
             if (client.player != null) {
+                checkEquipmentUpdates(client.player);
                 net.minecraftforge.common.MinecraftForge.EVENT_BUS.post(new net.minecraftforge.event.TickEvent.PlayerTickEvent(
                     client.player,
                     net.minecraftforge.event.TickEvent.Phase.END,
@@ -62,6 +63,30 @@ public class FabricIronsSpellbooksClient implements ClientModInitializer {
                 net.minecraftforge.event.TickEvent.Phase.END
             ));
         });
+    }
+
+    private static final net.minecraft.world.item.ItemStack[] lastEquipment = new net.minecraft.world.item.ItemStack[net.minecraft.world.entity.EquipmentSlot.values().length];
+    private static net.minecraft.world.item.ItemStack lastSpellbook = net.minecraft.world.item.ItemStack.EMPTY;
+
+    private static void checkEquipmentUpdates(net.minecraft.world.entity.player.Player player) {
+        boolean changed = false;
+        var slots = net.minecraft.world.entity.EquipmentSlot.values();
+        for (int i = 0; i < slots.length; i++) {
+            var current = player.getItemBySlot(slots[i]);
+            if (!net.minecraft.world.item.ItemStack.matches(lastEquipment[i] != null ? lastEquipment[i] : net.minecraft.world.item.ItemStack.EMPTY, current)) {
+                lastEquipment[i] = current.copy();
+                changed = true;
+            }
+        }
+        var curio = io.redspace.ironsspellbooks.api.util.Utils.getPlayerSpellbookStack(player);
+        if (curio == null) curio = net.minecraft.world.item.ItemStack.EMPTY;
+        if (!net.minecraft.world.item.ItemStack.matches(lastSpellbook, curio)) {
+            lastSpellbook = curio.copy();
+            changed = true;
+        }
+        if (changed || io.redspace.ironsspellbooks.player.ClientMagicData.getSpellSelectionManager() == null) {
+            io.redspace.ironsspellbooks.player.ClientMagicData.updateSpellSelectionManager();
+        }
     }
 
     public static boolean isClientLoaded() {

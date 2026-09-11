@@ -113,6 +113,10 @@ public class IronsSpellbooks {
         MinecraftForge.EVENT_BUS.register(DataHandling.class);
         MinecraftForge.EVENT_BUS.register(CommandRegistry.class);
 
+        var attributeEvent = new net.minecraftforge.event.entity.EntityAttributeCreationEvent();
+        CommonSetup.onAttributeCreate(attributeEvent);
+        modEventBus.post(attributeEvent);
+
         modEventBus.post(new InterModEnqueueEvent());
         modEventBus.post(new FMLCommonSetupEvent());
     }

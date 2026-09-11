@@ -10,4 +10,12 @@ public class ForgeGui extends Gui {
     public ForgeGui(Minecraft mc) {
         super(mc, mc.getItemRenderer());
     }
+
+    public void reset(net.minecraft.world.entity.player.Player player) {
+        this.leftHeight = 39;
+        this.rightHeight = 39;
+        if (player != null && (player.isEyeInFluid(net.minecraft.tags.FluidTags.WATER) || player.getAirSupply() < player.getMaxAirSupply())) {
+            this.rightHeight += 10;
+        }
+    }
 }

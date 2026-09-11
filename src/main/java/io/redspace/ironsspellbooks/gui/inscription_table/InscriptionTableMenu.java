@@ -4,11 +4,13 @@ import io.redspace.ironsspellbooks.api.events.InscribeSpellEvent;
 import io.redspace.ironsspellbooks.api.spells.ISpellContainer;
 import io.redspace.ironsspellbooks.api.spells.SpellData;
 import io.redspace.ironsspellbooks.api.util.Utils;
+import io.redspace.ironsspellbooks.compat.Curios;
 import io.redspace.ironsspellbooks.item.Scroll;
 import io.redspace.ironsspellbooks.item.SpellBook;
 import io.redspace.ironsspellbooks.registries.BlockRegistry;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import io.redspace.ironsspellbooks.registries.MenuRegistry;
+import top.theillusivec4.curios.api.CuriosApi;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.Container;
 import net.minecraft.world.SimpleContainer;
@@ -107,10 +109,11 @@ public class InscriptionTableMenu extends AbstractContainerMenu {
 //            this.addSlot(new ScrollExtractionSlot(handler, 2, 208, 136));
 //        });
 
-        var spellbookStack = Utils.getPlayerSpellbookStack(inv.player);
-        if (spellbookStack != null) {
+        var foundCurios = CuriosApi.getCuriosHelper().findCurios(inv.player, stack -> stack.getItem() instanceof SpellBook);
+        var curioResult = foundCurios.isEmpty() ? null : foundCurios.get(0).stack();
+        if (curioResult != null && !curioResult.isEmpty()) {
             fromCurioSlot = true;
-            spellBookSlot.set(spellbookStack);
+            spellBookSlot.set(curioResult);
         }
     }
 

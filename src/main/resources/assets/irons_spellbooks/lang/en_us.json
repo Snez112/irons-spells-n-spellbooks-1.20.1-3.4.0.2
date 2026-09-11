@@ -1,4 +1,5 @@
 {
+  "trinkets.slot.chest.spellbook": "Spellbook",
   "item.irons_spellbooks.spell_book": "Spell Book",
   "item.irons_spellbooks.wimpy_spell_book": "Wimpy Spell Book",
   "item.irons_spellbooks.evoker_spell_book": "Grimoire of Evokation",
@@ -1037,5 +1038,10 @@
   "affix.irons_spellbooks:sword/attribute/mana_regen.suffix": "of the Mana-tapped",
 
   "curios.identifier.spellbook": "Spell Book",
-  "curios.modifiers.spellbook": "When equipped as Spell Book:"
+  "curios.modifiers.spellbook": "When equipped as Spell Book:",
+  "trinkets.slot.spellbook.spellbook": "Spellbook",
+  "trinkets.group.spellbook": "Spellbook",
+  "trinkets.slot.chest.spellbook": "Spellbook",
+  "accessories.slot.spellbook": "Spellbook",
+  "accessories.group.spellbook": "Spellbook"
 }

@@ -36,6 +36,14 @@ public class SimpleAttributeSpellBook extends SpellBook {
     }
 
     @Override
+    public Multimap<Attribute, AttributeModifier> getDefaultAttributeModifiers(net.minecraft.world.entity.EquipmentSlot slot) {
+        if (slot == net.minecraft.world.entity.EquipmentSlot.MAINHAND || slot == net.minecraft.world.entity.EquipmentSlot.OFFHAND) {
+            return this.defaultModifiers;
+        }
+        return super.getDefaultAttributeModifiers(slot);
+    }
+
+    @Override
     public Multimap<Attribute, AttributeModifier> getAttributeModifiers(SlotContext slotContext, UUID uuid, ItemStack stack) {
         ImmutableMultimap.Builder<Attribute, AttributeModifier> attributeBuilder = new ImmutableMultimap.Builder<>();
         for (Attribute attribute : defaultModifiers.keySet()) {

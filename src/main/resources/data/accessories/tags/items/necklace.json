@@ -1,0 +1,12 @@
+{
+  "replace": false,
+  "values": [
+    {
+      "id": "#curios:necklace",
+      "required": false
+    },
+    "irons_spellbooks:heavy_chain_necklace",
+    "irons_spellbooks:concentration_amulet",
+    "irons_spellbooks:conjurers_talisman"
+  ]
+}

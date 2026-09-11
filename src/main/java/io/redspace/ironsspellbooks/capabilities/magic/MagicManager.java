@@ -55,13 +55,18 @@ public class MagicManager implements IMagicManager {
                     var spell = SpellRegistry.getSpell(playerMagicData.getCastingSpellId());
                     if (spell.getCastType() == CastType.LONG || spell.getCastType() == CastType.INSTANT) {
                         if (playerMagicData.getCastDurationRemaining() <= 0) {
-                            spell.castSpell(serverPlayer.level, playerMagicData.getCastingSpellLevel(), serverPlayer, playerMagicData.getCastSource(), true);
-                            if (playerMagicData.getCastSource() == CastSource.SCROLL) {
-                                Scroll.attemptRemoveScrollAfterCast(serverPlayer);
-                            }
-                            spell.onServerCastComplete(serverPlayer.level, playerMagicData.getCastingSpellLevel(), serverPlayer, playerMagicData, false);
-                            if (serverPlayer.isUsingItem()) {
-                                serverPlayer.stopUsingItem();
+                            try {
+                                spell.castSpell(serverPlayer.level, playerMagicData.getCastingSpellLevel(), serverPlayer, playerMagicData.getCastSource(), true);
+                            } catch (Exception e) {
+                                IronsSpellbooks.LOGGER.error("Error casting spell {}: ", spell.getSpellId(), e);
+                            } finally {
+                                if (playerMagicData.getCastSource() == CastSource.SCROLL) {
+                                    Scroll.attemptRemoveScrollAfterCast(serverPlayer);
+                                }
+                                spell.onServerCastComplete(serverPlayer.level, playerMagicData.getCastingSpellLevel(), serverPlayer, playerMagicData, false);
+                                if (serverPlayer.isUsingItem()) {
+                                    serverPlayer.stopUsingItem();
+                                }
                             }
                         }
                     } else if (spell.getCastType() == CastType.CONTINUOUS) {

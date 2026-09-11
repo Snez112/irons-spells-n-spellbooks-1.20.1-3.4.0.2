@@ -30,6 +30,7 @@ import io.redspace.ironsspellbooks.entity.mobs.SupportMob;
 import io.redspace.ironsspellbooks.entity.spells.root.PreventDismount;
 import io.redspace.ironsspellbooks.item.CastingItem;
 import io.redspace.ironsspellbooks.item.Scroll;
+import io.redspace.ironsspellbooks.item.SpellBook;
 import io.redspace.ironsspellbooks.item.curios.LurkerRing;
 import io.redspace.ironsspellbooks.network.ClientboundEquipmentChanged;
 import io.redspace.ironsspellbooks.network.ClientboundSyncMana;
@@ -148,7 +149,7 @@ public class ServerPlayerEvents {
         if (event.getEntity() instanceof ServerPlayer serverPlayer) {
             var playerMagicData = MagicData.getPlayerMagicData(serverPlayer);
 
-            if (playerMagicData.isCasting() && (event.getFrom().getItem() instanceof CastingItem || event.getTo().getItem() instanceof CastingItem)) {
+            if (playerMagicData.isCasting() && (event.getFrom().getItem() instanceof CastingItem || event.getTo().getItem() instanceof CastingItem || event.getFrom().getItem() instanceof SpellBook || event.getTo().getItem() instanceof SpellBook)) {
                 Utils.serverSideCancelCast(serverPlayer);
                 Messages.sendToPlayer(new ClientboundEquipmentChanged(), serverPlayer);
                 return;
@@ -162,7 +163,7 @@ public class ServerPlayerEvents {
                     Utils.serverSideCancelCast(serverPlayer);
                 }
                 Messages.sendToPlayer(new ClientboundEquipmentChanged(), serverPlayer);
-            } else if (isFromSpellContainer || ISpellContainer.isSpellContainer(event.getTo())) {
+            } else if (isFromSpellContainer || ISpellContainer.isSpellContainer(event.getTo()) || event.getFrom().getItem() instanceof SpellBook || event.getTo().getItem() instanceof SpellBook) {
                 Messages.sendToPlayer(new ClientboundEquipmentChanged(), serverPlayer);
             }
         }
@@ -237,6 +238,7 @@ public class ServerPlayerEvents {
     public static void onPlayerLoggedIn(PlayerEvent.PlayerLoggedInEvent event) {
         if (event.getEntity() instanceof ServerPlayer serverPlayer) {
             try {
+                io.redspace.ironsspellbooks.compat.trinkets.TrinketsCompat.updateCurioAttributes(serverPlayer);
                 var playerMagicData = MagicData.getPlayerMagicData(serverPlayer);
                 playerMagicData.getPlayerCooldowns().syncToPlayer(serverPlayer);
                 playerMagicData.getPlayerRecasts().syncAllToPlayer();

@@ -1,5 +1,6 @@
 package top.theillusivec4.curios.api;
 
+import io.redspace.ironsspellbooks.compat.trinkets.TrinketsCompat;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -26,26 +27,33 @@ public class CuriosApi {
         }
 
         public Optional<SlotResult> findFirstCurio(LivingEntity livingEntity, Predicate<ItemStack> filter) {
-            return Optional.empty();
+            return TrinketsCompat.findFirstCurio(livingEntity, filter);
         }
 
         public Optional<SlotResult> findCurio(LivingEntity livingEntity, String identifier, int index) {
-            return Optional.empty();
+            return TrinketsCompat.findCurio(livingEntity, identifier, index);
         }
 
         public List<SlotResult> findCurios(LivingEntity livingEntity, Predicate<ItemStack> filter) {
-            return Collections.emptyList();
+            return TrinketsCompat.findCurios(livingEntity, filter);
         }
 
         public List<SlotResult> findCurios(LivingEntity livingEntity, Item item) {
-            return Collections.emptyList();
+            return findCurios(livingEntity, s -> s.is(item));
         }
 
         public List<SlotResult> findCurios(LivingEntity livingEntity, String... identifiers) {
-            return Collections.emptyList();
+            if (identifiers == null || identifiers.length == 0) return Collections.emptyList();
+            List<SlotResult> list = new ArrayList<>();
+            for (String id : identifiers) {
+                findCurio(livingEntity, id, 0).ifPresent(list::add);
+            }
+            return list;
         }
 
-        public void setEquippedCurio(LivingEntity livingEntity, String identifier, int index, ItemStack stack) {}
+        public void setEquippedCurio(LivingEntity livingEntity, String identifier, int index, ItemStack stack) {
+            TrinketsCompat.setEquippedCurio(livingEntity, identifier, index, stack);
+        }
 
         public Set<String> getCurioTags(Item item) {
             return Collections.emptySet();

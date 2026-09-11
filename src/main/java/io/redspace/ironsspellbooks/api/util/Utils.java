@@ -133,14 +133,33 @@ public class Utils {
     }
 
     public static boolean isPlayerHoldingSpellBook(Player player) {
+        if (player.getMainHandItem().getItem() instanceof SpellBook || player.getOffhandItem().getItem() instanceof SpellBook) {
+            return true;
+        }
         var slotResult = CuriosApi.getCuriosHelper().findCurio(player, Curios.SPELLBOOK_SLOT, 0);
-        return slotResult.isPresent();
-        //return player.getMainHandItem().getItem() instanceof SpellBook || player.getOffhandItem().getItem() instanceof SpellBook;
+        if (slotResult.isPresent()) {
+            return true;
+        }
+        return !CuriosApi.getCuriosHelper().findCurios(player, stack -> stack.getItem() instanceof SpellBook).isEmpty();
     }
 
     @Nullable
     public static ItemStack getPlayerSpellbookStack(@NotNull Player player) {
-        return CuriosApi.getCuriosHelper().findCurio(player, Curios.SPELLBOOK_SLOT, 0).map(SlotResult::stack).orElse(null);
+        var curioResult = CuriosApi.getCuriosHelper().findCurio(player, Curios.SPELLBOOK_SLOT, 0).map(SlotResult::stack).orElse(null);
+        if (curioResult != null && !curioResult.isEmpty()) {
+            return curioResult;
+        }
+        var foundCurios = CuriosApi.getCuriosHelper().findCurios(player, stack -> stack.getItem() instanceof SpellBook);
+        if (!foundCurios.isEmpty()) {
+            return foundCurios.get(0).stack();
+        }
+        if (player.getMainHandItem().getItem() instanceof SpellBook) {
+            return player.getMainHandItem();
+        }
+        if (player.getOffhandItem().getItem() instanceof SpellBook) {
+            return player.getOffhandItem();
+        }
+        return null;
     }
 
     public static void setPlayerSpellbookStack(@NotNull Player player, ItemStack itemStack) {
@@ -322,7 +341,11 @@ public class Utils {
                     ServerboundCancelCast.cancelCast(serverPlayer, playerMagicData.getCastType() != CastType.LONG);
                 }
 
-                return spellData.getSpell().attemptInitiateCast(ItemStack.EMPTY, spellData.getSpell().getLevelFor(spellData.getLevel(), serverPlayer), serverPlayer.level, serverPlayer, spellItem.getCastSource(), true, spellItem.slot);
+                ItemStack castingStack = Utils.getPlayerSpellbookStack(serverPlayer);
+                if (castingStack == null) {
+                    castingStack = ItemStack.EMPTY;
+                }
+                return spellData.getSpell().attemptInitiateCast(castingStack, spellData.getSpell().getLevelFor(spellData.getLevel(), serverPlayer), serverPlayer.level, serverPlayer, spellItem.getCastSource(), true, spellItem.slot);
             }
         } else if (Utils.getPlayerSpellbookStack(serverPlayer) == null) {
             //Helper for beginners (they tried casting with the spellbook in their hand, not their spell book slot

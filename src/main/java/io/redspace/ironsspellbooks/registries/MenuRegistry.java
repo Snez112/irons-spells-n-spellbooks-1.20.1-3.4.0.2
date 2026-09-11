@@ -19,12 +19,16 @@ public class MenuRegistry {
     public static void register(IEventBus eventBus){
         MENUS.register(eventBus);
     }
-    private static <T extends AbstractContainerMenu> RegistryObject<MenuType<T>> registerMenuType(IContainerFactory<T> factory, String name) {
-        return MENUS.register(name, () -> IForgeMenuType.create(factory));
+    private static <T extends AbstractContainerMenu> RegistryObject<MenuType<T>> registerRegularMenuType(MenuType.MenuSupplier<T> factory, String name) {
+        return MENUS.register(name, () -> new MenuType<>(factory, net.minecraft.world.flag.FeatureFlags.VANILLA_SET));
     }
 
-    public static final RegistryObject<MenuType<InscriptionTableMenu>> INSCRIPTION_TABLE_MENU = registerMenuType(InscriptionTableMenu::new,"inscription_table_menu");
-    public static final RegistryObject<MenuType<ScrollForgeMenu>> SCROLL_FORGE_MENU = registerMenuType(ScrollForgeMenu::new,"scroll_forge_menu");
-    public static final RegistryObject<MenuType<ArcaneAnvilMenu>> ARCANE_ANVIL_MENU = registerMenuType(ArcaneAnvilMenu::new,"arcane_anvil_menu");
+    private static <T extends AbstractContainerMenu> RegistryObject<MenuType<T>> registerExtendedMenuType(IContainerFactory<T> factory, String name) {
+        return MENUS.register(name, () -> new net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerType<>(factory::create));
+    }
+
+    public static final RegistryObject<MenuType<InscriptionTableMenu>> INSCRIPTION_TABLE_MENU = registerRegularMenuType((syncId, inv) -> new InscriptionTableMenu(syncId, inv, (net.minecraft.network.FriendlyByteBuf) null), "inscription_table_menu");
+    public static final RegistryObject<MenuType<ScrollForgeMenu>> SCROLL_FORGE_MENU = registerExtendedMenuType(ScrollForgeMenu::new, "scroll_forge_menu");
+    public static final RegistryObject<MenuType<ArcaneAnvilMenu>> ARCANE_ANVIL_MENU = registerRegularMenuType((syncId, inv) -> new ArcaneAnvilMenu(syncId, inv, (net.minecraft.network.FriendlyByteBuf) null), "arcane_anvil_menu");
 
 }

@@ -28,6 +28,12 @@ import java.util.function.Predicate;
 @Mixin(LivingEntity.class)
 public abstract class LivingEntityMixin {
 
+    @Inject(method = "tick", at = @At("TAIL"))
+    public void onTick(CallbackInfo ci) {
+        LivingEntity self = (LivingEntity) (Object) this;
+        io.redspace.ironsspellbooks.compat.trinkets.TrinketsCompat.updateCurioAttributes(self);
+    }
+
     @Inject(method = "updateInvisibilityStatus", at = @At(value = "TAIL"))
     public void updateInvisibilityStatus(CallbackInfo ci) {
         LivingEntity self = (LivingEntity) (Object) this;
@@ -72,6 +78,12 @@ public abstract class LivingEntityMixin {
             return;
         }
         LivingEntity self = (LivingEntity) (Object) this;
+        for (Map.Entry<EquipmentSlot, ItemStack> entry : changedEquipment.entrySet()) {
+            EquipmentSlot slot = entry.getKey();
+            ItemStack currentStack = entry.getValue();
+            ItemStack oldStack = (slot.getType() == EquipmentSlot.Type.HAND) ? getLastHandItem(slot) : ItemStack.EMPTY;
+            net.minecraftforge.common.MinecraftForge.EVENT_BUS.post(new net.minecraftforge.event.entity.living.LivingEquipmentChangeEvent(self, slot, oldStack, currentStack));
+        }
         for (EquipmentSlot slot : handSlots) {
             ItemStack currentStack = changedEquipment.get(slot);
             if (currentStack == null) {

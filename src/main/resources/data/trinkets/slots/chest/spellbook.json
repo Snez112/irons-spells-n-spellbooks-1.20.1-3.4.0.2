@@ -1,0 +1,6 @@
+{
+  "icon": "irons_spellbooks:item/iron_spell_book",
+  "order": 50,
+  "amount": 1,
+  "validator_predicates": ["trinkets:tag"]
+}

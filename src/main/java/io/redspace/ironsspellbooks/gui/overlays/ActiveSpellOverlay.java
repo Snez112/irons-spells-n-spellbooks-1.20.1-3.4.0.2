@@ -72,6 +72,7 @@ public class ActiveSpellOverlay implements IGuiOverlay {
             int pixels = (int) (16 * f + 1f);
             guiHelper.blit(TEXTURE, centerX + 3, centerY + 20 - pixels, 47, 87, 16, pixels);
         }
+        guiHelper.flush();
     }
 
     private static boolean hasRightClickCasting(Item item) {

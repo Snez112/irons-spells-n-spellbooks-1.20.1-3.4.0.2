@@ -1,0 +1,8 @@
+{
+  "replace": false,
+  "order": 75,
+  "slots": [
+    "spellbook"
+  ],
+  "icon": "accessories:gui/slot/spellbook"
+}

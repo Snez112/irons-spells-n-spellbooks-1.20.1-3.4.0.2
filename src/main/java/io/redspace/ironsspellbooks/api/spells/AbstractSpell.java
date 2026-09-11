@@ -297,7 +297,11 @@ public abstract class AbstractSpell {
             magicData.setMana(newMana);
             Messages.sendToPlayer(new ClientboundSyncMana(magicData), serverPlayer);
         }
-        onCast(world, event.getSpellLevel(), serverPlayer, castSource, magicData);
+        try {
+            onCast(world, event.getSpellLevel(), serverPlayer, castSource, magicData);
+        } catch (Exception e) {
+            IronsSpellbooks.LOGGER.error("Error executing onCast for spell {}: ", getSpellId(), e);
+        }
 
         //If onCast just added a recast then don't decrement it
 

@@ -31,7 +31,7 @@ import top.theillusivec4.curios.api.type.capability.ICurio;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class SpellBook extends CurioBaseItem implements ISpellbook, IPresetSpellContainer {
+public class SpellBook extends CurioBaseItem implements ISpellbook, IPresetSpellContainer, io.redspace.ironsspellbooks.item.weapons.IMultihandWeapon {
     protected final SpellRarity rarity;
     protected final int maxSpellSlots;
 
@@ -109,6 +109,54 @@ public class SpellBook extends CurioBaseItem implements ISpellbook, IPresetSpell
     @Override
     public ICurio.SoundInfo getEquipSound(SlotContext slotContext, ItemStack stack) {
         return new ICurio.SoundInfo(SoundRegistry.EQUIP_SPELL_BOOK.get(), 1.0f, 1.0f);
+    }
+
+    @Override
+    public net.minecraft.world.InteractionResultHolder<ItemStack> use(Level level, net.minecraft.world.entity.player.Player player, net.minecraft.world.InteractionHand hand) {
+        ItemStack itemStack = player.getItemInHand(hand);
+        SpellSelectionManager spellSelectionManager = new SpellSelectionManager(player);
+        SpellSelectionManager.SelectionOption selectionOption = spellSelectionManager.getSelection();
+        if (selectionOption == null || selectionOption.spellData.equals(io.redspace.ironsspellbooks.api.spells.SpellData.EMPTY)) {
+            return net.minecraft.world.InteractionResultHolder.pass(itemStack);
+        }
+        io.redspace.ironsspellbooks.api.spells.SpellData spellData = selectionOption.spellData;
+        int spellLevel = spellData.getSpell().getLevelFor(spellData.getLevel(), player);
+        if (level.isClientSide()) {
+            if (ClientMagicData.isCasting()) {
+                return net.minecraft.world.item.ItemUtils.startUsingInstantly(level, player, hand);
+            } else if (ClientMagicData.getPlayerMana() < spellData.getSpell().getManaCost(spellLevel)
+                    || ClientMagicData.getCooldowns().isOnCooldown(spellData.getSpell())
+                    || !ClientMagicData.getSyncedSpellData(player).isSpellLearned(spellData.getSpell())) {
+                return net.minecraft.world.InteractionResultHolder.pass(itemStack);
+            } else {
+                return net.minecraft.world.item.ItemUtils.startUsingInstantly(level, player, hand);
+            }
+        }
+
+        var castingSlot = hand.ordinal() == 0 ? SpellSelectionManager.MAINHAND : SpellSelectionManager.OFFHAND;
+
+        if (spellData.getSpell().attemptInitiateCast(itemStack, spellLevel, level, (net.minecraft.server.level.ServerPlayer) player, selectionOption.getCastSource(), true, castingSlot)) {
+            return net.minecraft.world.item.ItemUtils.startUsingInstantly(level, player, hand);
+        } else {
+            return net.minecraft.world.InteractionResultHolder.fail(itemStack);
+        }
+    }
+
+    @Override
+    public int getUseDuration(ItemStack itemStack) {
+        return 7200;
+    }
+
+    @Override
+    public net.minecraft.world.item.UseAnim getUseAnimation(ItemStack pStack) {
+        return net.minecraft.world.item.UseAnim.BOW;
+    }
+
+    @Override
+    public void releaseUsing(ItemStack itemStack, Level level, net.minecraft.world.entity.LivingEntity entity, int timeLeft) {
+        entity.stopUsingItem();
+        Utils.releaseUsingHelper(entity, itemStack, timeLeft);
+        super.releaseUsing(itemStack, level, entity, timeLeft);
     }
 
     @Override
